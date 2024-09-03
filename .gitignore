@@ -1,0 +1,8 @@
+/tastedash-vue-admin/node_modules/*
+/tastedash-vue-client/node_modules/*
+/tastedash-vue-client/.hbuilderx/
+/tastedash-vue-client/unpackage/
+/tastedash-vue-client/package-lock.json
+/tastedash-vue-admin/yarn-error.log
+/tastedash-vue-admin/package-lock.json
+/tastedash-vue-admin/npminstall-debug.log
