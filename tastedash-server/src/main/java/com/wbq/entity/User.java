@@ -1,10 +1,11 @@
 package com.wbq.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
-import java.security.Timestamp;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @TableName("t_user")
@@ -15,7 +16,7 @@ public class User {
 
     private String session_key;
 
-    private String username;
+    private String nickname;
 
     private String avatar;
 
@@ -23,5 +24,14 @@ public class User {
 
     private Integer credit;
 
-    private Timestamp add_time;
+    @TableField("create_time")
+    @JsonSerialize(using=CustomDateTimeSerializer.class)
+    private Date createTime;
+
+    private int deleted;
+
+
+    @TableField("delete_time")
+    @JsonSerialize(using=CustomDateTimeSerializer.class)
+    private Date deleteTime;
 }

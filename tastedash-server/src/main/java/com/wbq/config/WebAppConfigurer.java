@@ -28,6 +28,7 @@ public class WebAppConfigurer implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         String[] patterns = new String[]{
+                "/error",
                 "/admin/user/login",
                 "/product/**",
                 "/category/**",

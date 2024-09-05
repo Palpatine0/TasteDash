@@ -67,8 +67,8 @@
                 <view class="order-bottom" @click="pop_Shopping()" :style="{'padding-bottom': Modelmes ? '68rpx' : ''}">
                     <view class="cart-box">
                         <view class="cart" style="width: 115rpx;">
-                            <view class="cart-left">
-                                <image src="https://i.imghippo.com/files/GIPAi1725152379.png" mode="widthFix"></image>
+                            <view class="cart-left" >
+                                <image src="https://i.imghippo.com/files/GIPAi1725152379.png" mode="widthFix" style="z-index: 100"></image>
                             </view>
                             <view class="cart-number" v-if="total_quantity > 0">{{ total_quantity }}</view>
                         </view>
@@ -545,7 +545,7 @@ export default {
     right: 0;
     display: flex;
     padding: 0 12rpx;
-    z-index: 9;
+    z-index: 100;
 }
 
 .cart-box {
