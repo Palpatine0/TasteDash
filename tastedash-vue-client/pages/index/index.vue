@@ -10,10 +10,11 @@
             <button open-type="getUserInfo" @getuserinfo="getUserInfo" style="border-radius: 50px">授权个人信息</button>
         </div>
     </div>
+
     <div v-else>
         <div v-if="tableId==null" class="headcount-select">
-            <div class="hello">请选择桌号</div>
-            <div class="table-num table-scroll">
+            <div class="demand">请选择桌号</div>
+            <div class="scroll-text scroll">
                 <scroll-view scroll-x="true" class="scroll-view_H" :enable-flex="true">
                     <div class="table-block">
                         <block v-for="(item,index) in tableIdArr" :key="index">
@@ -22,12 +23,12 @@
                     </div>
                 </scroll-view>
             </div>
-            <div class="start-diancan" :class="[tableIdTmp > -1 ? 'start-activ' : '']" @click="tableIdConfirm()">确认</div>
+            <div class="confirm-btn" :class="[tableIdTmp > -1 ? 'confirm-btn-available' : '']" @click="tableIdConfirm()">确认</div>
         </div>
         <div v-else class="headcount-select">
-            <div class="hello">请选择就餐人数</div>
-            <div class="table-num">桌号：{{ tableId }}</div>
-            <div class="table-num table-scroll">
+            <div class="demand">请选择就餐人数</div>
+            <div class="scroll-text">桌号：{{ tableId }}</div>
+            <div class="scroll-text scroll">
                 <scroll-view scroll-x="true" class="scroll-view_H" :enable-flex="true">
                     <div class="table-block">
                         <block v-for="(item,index) in headcountArr" :key="index">
@@ -36,7 +37,7 @@
                     </div>
                 </scroll-view>
             </div>
-            <div class="start-diancan" :class="[headcount > -1 ? 'start-activ' : '']" @click="menuRedirect()">开始点餐</div>
+            <div class="confirm-btn" :class="[headcount > -1 ? 'confirm-btn-available' : '']" @click="menuRedirect()">开始点餐</div>
         </div>
     </div>
 
@@ -45,7 +46,6 @@
 
 <script>
 
-import {requestUtil} from "../../utils/requestUtil";
 import common from "../../utils/common";
 
 export default {
@@ -73,14 +73,14 @@ export default {
 
         headcountSelect(index, item) {
             this.headcount = index
-            uni.setStorageSync('number_of_diners', item)
+            uni.setStorageSync('headcount', item)
         },
         menuRedirect() {
             if (this.headcount <= -1) {
                 return false
             }
             uni.reLaunch({
-                url: '/pages/home-page/page'
+                url: '/pages/menu/menu'
             })
         },
 
@@ -96,7 +96,7 @@ export default {
                     console.log("user code user code user code")
                     console.log(code)
                     uni.request({
-                        url: getApp().globalData.request_url + '/user/saveUserAuthInfo',
+                        url: getApp().globalData.requestUrl + '/user/saveUserAuthInfo',
                         method: 'POST',
                         data: {
                             code: code
@@ -116,7 +116,7 @@ export default {
                                         var nickname = userInfo.nickName
                                         var avatar = userInfo.avatarUrl
                                         uni.request({
-                                            url: getApp().globalData.request_url + '/user/saveUserInfo',
+                                            url: getApp().globalData.requestUrl + '/user/saveUserInfo',
                                             method: 'POST',
                                             data: {
                                                 openid: dataSet.openid,
@@ -229,7 +229,7 @@ page {
     border-radius: 15rpx;
 }
 
-.hello {
+.demand {
     height: 80rpx;
     font-size: 35rpx;
     font-weight: bold;
@@ -237,12 +237,12 @@ page {
     padding-left: 20rpx;
 }
 
-.table-num {
+.scroll-text {
     font-size: 30rpx;
     padding-left: 20rpx;
 }
 
-.table-scroll {
+.scroll {
     margin-top: 100rpx;
 }
 
@@ -267,8 +267,7 @@ page {
     border-radius: 15rpx;
 }
 
-/* 按钮 */
-.start-diancan {
+.confirm-btn {
     height: 90rpx;
     line-height: 90rpx;
     background-color: #fdf4d7;
@@ -278,13 +277,11 @@ page {
     border-radius: 15rpx;
 }
 
-/* 点击后加上颜色*/
 .activetext {
     background-color: #f9dd89 !important;
 }
 
-.start-activ {
-    /* background-color: #f6c947 !important; */
+.confirm-btn-available {
     color: #000000 !important;
     background: #f8be23 !important;
 }

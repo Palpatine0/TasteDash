@@ -1,9 +1,9 @@
 <script>
 export default {
     globalData: {
-        Modelmes: null,
+        needsTopPadding: null,
         // dev
-        request_url: "http://localhost:8089",
+        requestUrl: "http://localhost:8089",
         // prd
         // request_url:"http://111.231.19.137:8089"
     },
@@ -28,9 +28,9 @@ export default {
         wx.getSystemInfo({
             success: (res) => {
                 if (res.safeArea.top > 40) {
-                    this.globalData.Modelmes = true
+                    this.globalData.needsTopPadding = true
                 } else {
-                    this.globalData.Modelmes = false
+                    this.globalData.needsTopPadding = false
                 }
             }
         })

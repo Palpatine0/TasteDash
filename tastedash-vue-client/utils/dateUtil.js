@@ -1,4 +1,3 @@
-// 判断传入日期是否和当前日期比较 
  const judgeDate=(toDate)=>{
 	return new Date().getTime()-new Date(toDate).getTime();
 }

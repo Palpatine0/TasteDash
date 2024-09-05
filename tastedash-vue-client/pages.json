@@ -9,9 +9,9 @@
 			}
 		},
 		{
-			"path":"pages/home-page/page",
+			"path":"pages/menu/menu",
 			"style":{
-				"navigationBarTitleText":"Hazel Grove",
+				"navigationBarTitleText":"Taste Dash",
 				"navigationBarBackgroundColor":"#fefefe"
 			}
 		},
@@ -29,7 +29,15 @@
 				"navigationBarTitleText":"订单详情",
 				"navigationBarBackgroundColor":"#fefefe"
 			}
+		},
+		{
+			"path":"pages/menu/components/me",
+			"style":{
+				"navigationBarTitleText":"订单详情",
+				"navigationBarBackgroundColor":"#fefefe"
+			}
 		}
+
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

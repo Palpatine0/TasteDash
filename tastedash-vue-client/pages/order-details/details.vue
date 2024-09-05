@@ -42,10 +42,10 @@
     </view>
 
     <div class="opts">
-        <view :style="{'padding-bottom': Modelmes ? '68rpx' : ''}" @click="orderRedirect">
+        <view :style="{'padding-bottom': needsTopPadding ? '68rpx' : ''}" @click="orderRedirect">
             <view class="order-more">加菜</view>
         </view>
-        <view :style="{'padding-bottom': Modelmes ? '68rpx' : ''}">
+        <view :style="{'padding-bottom': needsTopPadding ? '68rpx' : ''}">
             <view class="pay">结账</view>
         </view>
     </div>
@@ -57,7 +57,7 @@
 import {getBaseUrl, requestUtil} from "../../utils/requestUtil.js"
 
 const app = getApp()
-const {Modelmes} = app.globalData
+const {needsTopPadding} = app.globalData
 // 骨架屏
 import Order from '../skeleton-view/order.vue'
 
@@ -72,7 +72,7 @@ export default {
         return {
             baseUrl: '',
             exist: true,
-            Modelmes,
+            needsTopPadding,
             Price,
             overall: 0,//总的多少分
             other_data: {},
@@ -100,6 +100,8 @@ export default {
                 this.other_data = res.menu
 
                 this.goods_data = res_data
+                console.log(this.goods_data)
+                console.log(this.goods_data)
 
                 this.exist = false
 

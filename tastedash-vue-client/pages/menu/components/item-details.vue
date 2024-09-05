@@ -1,10 +1,9 @@
 <template>
-<!-- 单个商品弹出 -->
 <view class="details-back">
-    <view class="goods-details coup-anim">
-        <view class="goods-image">
-            <image :src="'http://localhost:8089'+'/image/dish/'+pro_details.itemgood.image" mode="aspectFill"></image>
-            <image src="/static/tab/guanbi.png" mode="widthFix" @click="cLose()"></image>
+    <view class="item-details coup-anim">
+        <view class="item-image">
+            <image :src="requestUrl+'/image/dish/'+pro_details.itemgood.image" mode="aspectFill"></image>
+            <image src="/static/tab/guanbi.png" mode="widthFix" @click="close()"></image>
         </view>
         <view class="details-padd">
             <view class="details-name">{{ pro_details.itemgood.name }}</view>
@@ -17,13 +16,13 @@
                 </view>
                 <view class="details-quantity">
                     <view>
-                        <image v-if="pro_details.itemgood.quantity > 0" src="/static/tab/minus.jpg" @click="reduce(pro_details)"></image>
+                        <image v-if="pro_details.itemgood.quantity > 0" src="/static/tab/minus.jpg" @click="removeFromCart(pro_details)"></image>
                     </view>
                     <view>
                         <text v-if="pro_details.itemgood.quantity > 0">{{ pro_details.itemgood.quantity }}</text>
                     </view>
                     <view>
-                        <image src="/static/tab/plus.jpg" @click="plus(pro_details)"></image>
+                        <image src="/static/tab/plus.jpg" @click="addToCart(pro_details)"></image>
                     </view>
                 </view>
             </view>
@@ -35,20 +34,22 @@
 <script>
 export default {
     props: {pro_details: Object},
+    data() {
+        return {
+            requestUrl: getApp().globalData.requestUrl
+        }
+    },
     methods: {
-        // 关闭弹窗
-        cLose() {
-            this.$parent.popup_item(false)
+        close() {
+            this.$parent.itemDetailToggle(false)
         },
-        // -
-        reduce(pro_details) {
+        removeFromCart(pro_details) {
             let {index, good_index, cid, itemgood} = pro_details
-            this.$parent.reduce(index, good_index, cid, itemgood)
+            this.$parent.removeFromCart(index, good_index, cid, itemgood)
         },
-        // +
-        plus(pro_details) {
+        addToCart(pro_details) {
             let {index, good_index, cid, itemgood} = pro_details
-            this.$parent.plus(index, good_index, cid, itemgood)
+            this.$parent.addToCart(index, good_index, cid, itemgood)
         }
     }
 }
@@ -57,13 +58,13 @@ export default {
 <style scoped>
 @import '../../../style/shadow.css';
 
-.goods-image {
+.item-image {
     width: 100%;
     height: 500rpx;
     position: relative;
 }
 
-.goods-image image:nth-child(1) {
+.item-image image:nth-child(1) {
     display: block;
     width: 100%;
     height: 500rpx;
@@ -71,7 +72,7 @@ export default {
     border-top-right-radius: 20rpx;
 }
 
-.goods-image image:nth-child(2) {
+.item-image image:nth-child(2) {
     display: block;
     width: 50rpx;
     height: 50rpx;
