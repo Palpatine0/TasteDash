@@ -7,4 +7,6 @@ public interface IUserService extends IService<User> {
     User saveUserAuthInfo(String code);
 
     void saveUserInfo(String openid, String nickname, String avatar);
+
+    User getUserInfo(String id);
 }

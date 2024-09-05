@@ -1,14 +1,14 @@
 <template>
 <!-- 弹出购物车 -->
 <view>
-    <view class="details-back" @click="close()"></view>
-    <view class="item-details coup-anim">
+    <view class="mask" @click="close()"></view>
+    <view class="widget-popup coup-anim">
         <view class="empty">
             <image src="/static/tab/qingkong.svg" mode="widthFix"></image>
             <text @click="emptyCart()">清空已点</text>
         </view>
         <!-- 商品列表 -->
-        <block v-for="(item,index) in shopping_card" :key="index">
+        <block v-for="(item,index) in cartItemList" :key="index">
             <view class="item-list" v-if="item.quantity > 0">
                 <view class="item-list-image">
                     <image :src="requestUrl+'/image/dish/'+item.image" mode="aspectFill"></image>
@@ -46,18 +46,18 @@ export default {
             requestUrl: getApp().globalData.requestUrl
         }
     },
-    props: {shopping_card: Array},
+    props: {cartItemList: Array},
     methods: {
         close() {
             this.$parent.cartToggle(false)
         },
         removeFromCart(index, quantity, _id, cid, good_index, unitprice) {
             const QU = quantity - 1
-            this.$parent.carttotal_priceCalculation(index, QU, _id, cid, good_index, unitprice)
+            this.$parent.cartTotalPriceCalculation(index, QU, _id, cid, good_index, unitprice)
         },
         addToCart(index, quantity, _id, cid, good_index, unitprice) {
             const QU = quantity + 1
-            this.$parent.carttotal_priceCalculation(index, QU, _id, cid, good_index, unitprice)
+            this.$parent.cartTotalPriceCalculation(index, QU, _id, cid, good_index, unitprice)
         },
         emptyCart() {
             this.$parent.emptyCart()

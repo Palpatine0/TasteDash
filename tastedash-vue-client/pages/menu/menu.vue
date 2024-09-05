@@ -23,7 +23,7 @@
                 </view>
                 <!-- right -->
                 <view class="order-right">
-                    <scroll-view scroll-y="true" class="scroll-Hei" :scroll-with-animation="true" :enhanced="true" :show-scrollbar="false" :scroll-into-view="scroll_into" @scroll="scroll">
+                    <scroll-view scroll-y="true" class="scroll-Hei" :scroll-with-animation="true" :enhanced="true" :show-scrollbar="false" :scroll-into-view="scrollInto" @scroll="scroll">
                         <block v-for="(item,index) in itemList" :key="index">
                             <view :id="item.cid" class="rig-height">
                                 <view class="classif">{{ item.label }}</view>
@@ -82,10 +82,10 @@
         </view>
     </view>
 
-    <Cart v-if="card" :shopping_card="cartItemList"></Cart>
-    <Details v-if="popupitem" :pro_details="pro_details"></Details>
+    <Cart v-if="cardVisible" :cartItemList="cartItemList"></Cart>
+    <Details v-if="itemDetailVisible" :itemDetail="itemDetail"></Details>
     <Home v-if="exist"></Home>
-    <Me v-if="me_show"></Me>
+    <Me v-if="meVisible" :userInfo="userInfo"></Me>
 
 </view>
 </template>
@@ -110,22 +110,28 @@ export default {
     data() {
         return {
             requestUrl: getApp().globalData.requestUrl,
+
+            heightset: [],
+            topHeight: 0,
+
+            meVisible: false,
             avatar: "",
+            userInfo: [],
 
             categoryList: [],
+
+            itemDetailVisible: false,
+            itemDetail: {},
             itemList: [],
 
             exist: true,
             needsTopPadding,
             trigger: 0,
-            heightset: [],
-            tophei: 0,
-            scroll_into: '',
-            card: false,
+
+            scrollInto: '',
+            cardVisible: false,
             cartItemList: [],
-            popupitem: false,
-            me_show: false,
-            pro_details: {},
+
             tmplIds: 'FANEJh9NPNhJrLpqQx7UhNerntR5GwEsLKK-95tuvNM',
             headcount: 0,
         }
@@ -133,14 +139,14 @@ export default {
     methods: {
         categoryNavigation(index, cid) {
             this.trigger = index
-            this.scroll_into = cid
+            this.scrollInto = cid
             setTimeout(() => {
-                this.scroll_into = ''
+                this.scrollInto = ''
             }, 200)
         },
         scroll(event) {
             let scrollTop = event.detail.scrollTop
-            if (scrollTop >= this.tophei) {
+            if (scrollTop >= this.topHeight) {
                 if (scrollTop >= this.heightset[this.trigger]) {
                     this.trigger += 1
                 }
@@ -149,9 +155,8 @@ export default {
                     this.trigger -= 1
                 }
             }
-            this.tophei = scrollTop
+            this.topHeight = scrollTop
         },
-
         addToCart(index, good_index, cid, itemgood) {
             const {quantity, image, name, unitprice, unit, id} = itemgood
             const QU = quantity + 1
@@ -159,7 +164,6 @@ export default {
             const arr = {image, name, unitprice, quantity: QU, unit, total_price: unitprice * QU, id, cid, good_index}
             this.handleCart(arr)
         },
-
         removeFromCart(index, good_index, cid, itemgood) {
             const {quantity, image, name, unitprice, unit, id} = itemgood
             const QU = quantity - 1
@@ -167,7 +171,6 @@ export default {
             const arr = {image, name, unitprice, quantity: QU, unit, total_price: unitprice * QU, id, cid, good_index}
             this.handleCart(arr)
         },
-
         handleCart(arr) {
             if (this.cartItemList.length == 0) {
                 this.cartItemList.push(arr)
@@ -180,10 +183,9 @@ export default {
                     this.$set(this.cartItemList[itemindex], 'total_price', arr.total_price)
                 }
             }
-            this.total_priceCalculation()
+            this.totalPriceCalculation()
         },
-
-        total_priceCalculation() {
+        totalPriceCalculation() {
             let array = this.cartItemList
             let res = {}
             array.forEach(item => {
@@ -202,14 +204,12 @@ export default {
                 this.$set(this.categoryList[res_index], 'sele_quantity', item.value)
             })
         },
-
-
-        carttotal_priceCalculation(index, QU, id, cid, good_index, unitprice) {
+        cartTotalPriceCalculation(index, QU, id, cid, good_index, unitprice) {
             this.$set(this.cartItemList[index], 'quantity', QU)
             this.$set(this.cartItemList[index], 'total_price', QU * unitprice)
             const itemcid = this.itemList.findIndex(item => item.cid == cid)
             this.$set(this.itemList[itemcid].dishList[good_index], 'quantity', QU)
-            this.total_priceCalculation()
+            this.totalPriceCalculation()
         },
 
         emptyCart() {
@@ -226,23 +226,23 @@ export default {
         },
 
         itemDetailToggle(value = true, index, good_index, cid, itemgood) {
-            this.popupitem = value
-            this.pro_details = {index, good_index, cid, itemgood}
+            this.itemDetailVisible = value
+            this.itemDetail = {index, good_index, cid, itemgood}
         },
         cartToggle(value = true) {
-            this.card = value
+            this.cardVisible = value
         },
 
-        async fetchData() {
+        async getDishesInfo() {
             const categoryList = await requestUtil({url: "/category/listAll", method: "get"})
             const itemList = await requestUtil({url: "/dish/listAll", method: "get"})
             this.categoryList = categoryList.categoryListAll
             this.itemList = itemList.allDish
             this.$nextTick(() => {
-                this.goods_height()
+                this.itemHeightCalculation()
             })
         },
-        goods_height() {
+        itemHeightCalculation() {
             this.heightset = []
             let cate_height = 0
             const query = wx.createSelectorQuery()
@@ -255,7 +255,6 @@ export default {
                 this.exist = false
             })
         },
-
         orderConfirm() {
             wx.requestSubscribeMessage({
                 tmplIds: [this.tmplIds],
@@ -267,8 +266,6 @@ export default {
                 }
             })
         },
-
-
         async orderSubmit() {
             wx.showLoading({title: '正在下单', mask: true})
             let res = this.cartItemList.filter(item => item.total_price != 0)
@@ -297,7 +294,20 @@ export default {
             }
         },
         meToggle() {
-            this.me_show = !this.me_show
+            this.meVisible = !this.meVisible
+        },
+        getUserInfo() {
+            uni.request({
+                url: getApp().globalData.requestUrl + '/user/getUserInfo',
+                method: 'POST',
+                data: {
+                    id: uni.getStorageSync("uid")
+                },
+                success: (res) => {
+                    this.userInfo = res.data
+                    console.log(this.userInfo)
+                },
+            });
         },
         pushMessage() {
             var pubsub = this.goeasy.pubsub;
@@ -322,7 +332,8 @@ export default {
     onLoad() {
         this.headcount = wx.getStorageSync('headcount')
         this.avatar = uni.getStorageSync('avatar');
-        this.fetchData()
+        this.getDishesInfo()
+        this.getUserInfo()
     },
     computed: {
         total_quantity() {

@@ -93,8 +93,6 @@ export default {
                 provider: 'weixin',
                 success: (loginRes) => {
                     const {code} = loginRes;
-                    console.log("user code user code user code")
-                    console.log(code)
                     uni.request({
                         url: getApp().globalData.requestUrl + '/user/saveUserAuthInfo',
                         method: 'POST',
@@ -109,7 +107,7 @@ export default {
                                 uni.setStorageSync('openid', dataSet.openid);
                                 uni.setStorageSync('sessionKey', dataSet.openid.session_key);
                                 uni.setStorageSync('unionid', dataSet.unionid);
-
+                                uni.setStorageSync('uid', dataSet.id);
                                 uni.getUserInfo({
                                     success: function (res) {
                                         var userInfo = res.userInfo
@@ -134,7 +132,6 @@ export default {
                                         });
                                     }
                                 })
-
                                 this.userProfileAvailable = true
                                 uni.showToast({title: '授权成功', icon: 'none'});
                             }

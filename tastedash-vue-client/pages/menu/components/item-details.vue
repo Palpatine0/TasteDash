@@ -1,28 +1,29 @@
 <template>
-<view class="details-back">
-    <view class="item-details coup-anim">
+<view class="">
+    <view class="mask" @click="close()"></view>
+    <view class="center_h widget-popup coup-anim">
         <view class="item-image">
-            <image :src="requestUrl+'/image/dish/'+pro_details.itemgood.image" mode="aspectFill"></image>
+            <image :src="requestUrl+'/image/dish/'+itemDetail.itemgood.image" mode="aspectFill"></image>
             <image src="/static/tab/guanbi.png" mode="widthFix" @click="close()"></image>
         </view>
         <view class="details-padd">
-            <view class="details-name">{{ pro_details.itemgood.name }}</view>
-            <view class="details-Thinning">已售 {{ pro_details.itemgood.monthlysale }}</view>
+            <view class="details-name">{{ itemDetail.itemgood.name }}</view>
+            <view class="details-Thinning">已售 {{ itemDetail.itemgood.monthlysale }}</view>
             <view class="describe">
                 <view class="details-unit-price">
                     <text>¥</text>
-                    <text>{{ pro_details.itemgood.unitprice }}</text>
-                    <text>/{{ pro_details.itemgood.unit }}</text>
+                    <text>{{ itemDetail.itemgood.unitprice }}</text>
+                    <text>/{{ itemDetail.itemgood.unit }}</text>
                 </view>
                 <view class="details-quantity">
                     <view>
-                        <image v-if="pro_details.itemgood.quantity > 0" src="/static/tab/minus.jpg" @click="removeFromCart(pro_details)"></image>
+                        <image v-if="itemDetail.itemgood.quantity > 0" src="/static/tab/minus.jpg" @click="removeFromCart(itemDetail)"></image>
                     </view>
                     <view>
-                        <text v-if="pro_details.itemgood.quantity > 0">{{ pro_details.itemgood.quantity }}</text>
+                        <text v-if="itemDetail.itemgood.quantity > 0">{{ itemDetail.itemgood.quantity }}</text>
                     </view>
                     <view>
-                        <image src="/static/tab/plus.jpg" @click="addToCart(pro_details)"></image>
+                        <image src="/static/tab/plus.jpg" @click="addToCart(itemDetail)"></image>
                     </view>
                 </view>
             </view>
@@ -31,9 +32,10 @@
 </view>
 </template>
 
+
 <script>
 export default {
-    props: {pro_details: Object},
+    props: {itemDetail: Object},
     data() {
         return {
             requestUrl: getApp().globalData.requestUrl
@@ -43,12 +45,12 @@ export default {
         close() {
             this.$parent.itemDetailToggle(false)
         },
-        removeFromCart(pro_details) {
-            let {index, good_index, cid, itemgood} = pro_details
+        removeFromCart(itemDetail) {
+            let {index, good_index, cid, itemgood} = itemDetail
             this.$parent.removeFromCart(index, good_index, cid, itemgood)
         },
-        addToCart(pro_details) {
-            let {index, good_index, cid, itemgood} = pro_details
+        addToCart(itemDetail) {
+            let {index, good_index, cid, itemgood} = itemDetail
             this.$parent.addToCart(index, good_index, cid, itemgood)
         }
     }

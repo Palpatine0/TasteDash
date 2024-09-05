@@ -1,132 +1,103 @@
 <template>
-<!-- 弹出购物车 -->
-<view>
-    <view class="details-back" @click="cLose()"></view>
-    <view class="item-details coup-anim">
-        <view class="empty">
-            <image src="/static/tab/qingkong.svg" mode="widthFix"></image>
-            <text @click="empTy()">清空已点</text>
+<view class="share-container">
+    <view class="mask" @click="close()"></view>
+    <view class="widget-center coup-anim">
+        <view class="share-header">您的分享码</view>
+        <view class="qrcode-container">
+            <img class="qrcode" :src="shareQr" alt="QR Code">
+            <view class="share-tip">通过分享此二维码邀请他人点餐，您可获得其消费总额10%的返现额度!</view>
         </view>
-        <!-- 商品列表 -->
-        <block v-for="(item,index) in shopping_card" :key="index">
-            <view class="item-list" v-if="item.quantity > 0">
-                <view class="item-list-image">
-                    <image :src="request_url+'/image/dish/'+item.image" mode="aspectFill"></image>
-                </view>
-                <view class="item-list-name">
-                    <view>{{ item.name }}</view>
-                    <view class="list-text">
-                        <text>¥</text>
-                        <!-- 总价 -->
-                        <text>{{ item.total_price }}</text>
-                    </view>
-                </view>
-                <view class="item-quantity">
-                    <view>
-                        <image src="/static/tab/jianhao.png" mode="widthFix" @click="reduce(index,item.quantity,item._id,item.cid,item.good_index,item.unitprice)"></image>
-                    </view>
-                    <view>{{ item.quantity }}</view>
-                    <view>
-                        <image src="/static/tab/jia.png" mode="widthFix" @click="plus(index,item.quantity,item._id,item.cid,item.good_index,item.unitprice)"></image>
-                    </view>
-                </view>
-            </view>
-        </block>
-        <view style="height: 100rpx;"></view>
+        <view class="user-info">
+            <div class="username">{{ userInfo.nickname }}</div>
+            <div class="credit">您的额度: {{ userInfo.credit }}</div>
+        </view>
+        <button class="withdraw-button" @click="withdraw">提现</button>
     </view>
 </view>
 </template>
 
 <script>
-import {getBaseUrl, requestUtil} from "../../../utils/requestUtil.js"
+import {requestUtil} from "../../../utils/requestUtil";
 
 export default {
     data() {
         return {
-            request_url: getApp().globalData.requestUrl
-        }
+            request_url: getApp().globalData.requestUrl,
+        };
     },
-    props: {shopping_card: Array},
+    props: {userInfo: Object},
     methods: {
-        cLose() {
-            // 调用父组件的pop_Shopping()
-            this.$parent.pop_Shopping(false)
+        close() {
+            this.$parent.meToggle(false);
         },
-
-    }
-}
+        withdraw() {
+        },
+    },
+};
 </script>
 
 <style scoped>
 @import '../../../style/shadow.css';
 
-.empty image {
-    width: 25rpx;
-    height: 25rpx;
-    display: block;
-    padding-right: 10rpx;
-}
-
-.empty {
-    font-size: 25rpx;
-    color: #aaaaaa;
-    height: 90rpx;
-    border-bottom: 1rpx solid #f2f2f2;
+.share-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    margin: 0 20rpx;
+    justify-content: center;
 }
 
-.item-list-image image {
-    display: block;
-    width: 130rpx;
-    height: 130rpx;
-    border-radius: 10rpx;
+
+.share-header {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
-.item-quantity image {
-    display: block;
-    width: 50rpx;
-    height: 50rpx;
-}
-
-.item-quantity {
+.qrcode-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    align-self: flex-end;
-    width: 200rpx;
-    justify-content: space-between;
 }
 
-.item-list {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 20rpx;
-    height: 130rpx;
-    font-size: 30rpx;
-    margin: 25rpx 0 45rpx 0;
+.qrcode {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 10px;
 }
 
-.item-list-name {
-    flex: 1;
-    position: relative;
-    padding: 0 20rpx;
+.share-tip {
+    font-size: 14px;
+    color: #555;
+    margin-top: 10px;
 }
 
-.list-text text {
-    display: block;
+.user-info {
+    margin: 20px 0;
 }
 
-.list-text {
-    display: flex;
-    align-items: center;
-    position: absolute;
-    bottom: 0;
+.username {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
-.list-text text:nth-child(1) {
-    font-size: 25rpx;
-    padding-right: 5rpx;
+.credit {
+    font-size: 16px;
+    color: #666;
+}
+
+.withdraw-button {
+    width: 100%;
+    padding: 10px 0;
+    background-color: #812740;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.withdraw-button:hover {
+    background-color: #812740;
 }
 </style>

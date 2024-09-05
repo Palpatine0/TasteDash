@@ -34,4 +34,10 @@ public class UserController {
         userService.saveUserInfo(openid, nickname, avatar);
     }
 
+    @PostMapping("getUserInfo")
+    public User getUserInfo(@RequestBody Map<String, String> dto) {
+        String id = dto.get("id");
+        return userService.getUserInfo(id);
+    }
+
 }

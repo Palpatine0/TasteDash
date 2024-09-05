@@ -13,7 +13,7 @@ export const requestUtil = (params) => {
     header["token"] = uni.getStorageSync("token");
     ajaxTimes++;
 
-    wx.showLoading({
+    uni.showLoading({
         title: "加载中",
         mask: true
     });
@@ -21,7 +21,7 @@ export const requestUtil = (params) => {
     var start = new Date().getTime();
     while (true) if (new Date().getTime() - start > 1000 * 1) break;
     return new Promise((resolve, reject) => {
-        wx.request({
+        uni.request({
             ...params,
             header: header,
             url: requestUrl + params.url,
@@ -39,7 +39,7 @@ export const requestUtil = (params) => {
             complete: () => {
                 ajaxTimes--;
                 if (ajaxTimes === 0) {
-                    wx.hideLoading();
+                    uni.hideLoading();
                 }
             }
         });

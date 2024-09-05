@@ -29,7 +29,6 @@ public class WeChatUtil {
     private static final String secret = "a0507d8a8f1e6bf2c4acce9ebc3a383a";
 
     public static JSONObject getOpenId(String code) {
-
         String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + appId + "&secret=" + secret + "&js_code=" + code + "&grant_type=authorization_code";
         PrintWriter out = null;
         BufferedReader in = null;
@@ -38,7 +37,6 @@ public class WeChatUtil {
         try {
             URL realUrl = new URL(url);
             URLConnection conn = realUrl.openConnection();
-
             conn.setRequestProperty("contentType", "text/plain");
             conn.setRequestProperty("content-type", "application/x-www-form-urlencoded");
             conn.setConnectTimeout(1000);
@@ -53,7 +51,6 @@ public class WeChatUtil {
             }
             JSONObject jsonObject = JSONObject.parseObject(stringBuffer.toString());
             return jsonObject;
-
         } catch (Exception e) {
             e.printStackTrace();
         }

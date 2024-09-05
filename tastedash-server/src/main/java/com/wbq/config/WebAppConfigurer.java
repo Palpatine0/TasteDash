@@ -38,7 +38,6 @@ public class WebAppConfigurer implements WebMvcConfigurer {
                 "/dish/**",
                 "/order/**",
                 "/user/**",
-                "/user/getUserInfo"
         };
         registry.addInterceptor(sysInterceptor())
                 .addPathPatterns("/**")
