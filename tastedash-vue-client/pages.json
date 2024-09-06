@@ -1,11 +1,11 @@
 {
 	"pages": [
-
 		{
-			"path":"pages/saoma/saoma",
+			"path":"pages/index/index",
 			"style":{
-				"navigationBarTitleText":"扫码点餐",
-				"navigationBarBackgroundColor":"#fefefe"
+				"navigationBarTitleText":"选择人数",
+				"navigationBarBackgroundColor":"#fefefe",
+				"navigationStyle":"custom"
 			}
 		},
 		{
@@ -16,24 +16,16 @@
 			}
 		},
 		{
-			"path":"pages/index/index",
-			"style":{
-				"navigationBarTitleText":"选择人数",
-				"navigationBarBackgroundColor":"#fefefe",
-				"navigationStyle":"custom"
-			}
-		},
-		{
-			"path":"pages/order-details/details",
+			"path":"pages/order/order",
 			"style":{
 				"navigationBarTitleText":"订单详情",
 				"navigationBarBackgroundColor":"#fefefe"
 			}
 		},
 		{
-			"path":"pages/menu/components/me",
+			"path":"pages/order-history/order-history",
 			"style":{
-				"navigationBarTitleText":"订单详情",
+				"navigationBarTitleText":"历史订单",
 				"navigationBarBackgroundColor":"#fefefe"
 			}
 		}

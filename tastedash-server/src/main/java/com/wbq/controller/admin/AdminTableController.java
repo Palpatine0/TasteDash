@@ -2,7 +2,7 @@ package com.wbq.controller.admin;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.wbq.entity.PageBean;
+import com.wbq.entity.Page;
 import com.wbq.entity.R;
 import com.wbq.entity.Table;
 import com.wbq.properties.WeChatProperties;
@@ -65,11 +65,11 @@ public class AdminTableController {
     }
 
     @RequestMapping("/list")
-    public R list(@RequestBody PageBean pageBean) {
-        System.out.println(pageBean);
+    public R list(@RequestBody Page page) {
+        System.out.println(page);
         Map<String, Object> map = new HashMap<>();
-        map.put("start", pageBean.getStart());
-        map.put("pageSize", pageBean.getPageSize());
+        map.put("start", page.getStart());
+        map.put("pageSize", page.getPageSize());
         List<Table> list = tableService.list(map);
         Long total = tableService.getTotal(map);
         Map<String, Object> resultMap = new HashMap<>();

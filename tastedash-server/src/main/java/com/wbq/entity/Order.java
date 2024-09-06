@@ -14,6 +14,11 @@ public class Order {
 
     private Integer id;
 
+    private Integer uid;
+
+    @TableField(select = false, exist = false)
+    private String nickname;
+
     private String order_no;
 
     private String table_number;
@@ -26,8 +31,9 @@ public class Order {
 
     private String order_receiving;
 
+    @TableField("create_time")
     @JsonSerialize(using=CustomDateTimeSerializer.class)
-    private Date order_time;
+    private Date createTime;
 
     @TableField(select = false,exist = false)
     private List<OrderDetail> goods_list;

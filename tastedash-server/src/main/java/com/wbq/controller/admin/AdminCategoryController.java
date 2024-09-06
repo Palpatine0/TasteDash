@@ -33,11 +33,11 @@ public class AdminCategoryController {
     }
 
     @RequestMapping("/list")
-    public R list(@RequestBody PageBean pageBean) {
-        System.out.println(pageBean);
+    public R list(@RequestBody Page page) {
+        System.out.println(page);
         Map<String, Object> map = new HashMap<>();
-        map.put("start", pageBean.getStart());
-        map.put("pageSize", pageBean.getPageSize());
+        map.put("start", page.getStart());
+        map.put("pageSize", page.getPageSize());
         List<Table> list = categoryService.list(map);
         Long total = categoryService.getTotal(map);
         Map<String, Object> resultMap = new HashMap<>();

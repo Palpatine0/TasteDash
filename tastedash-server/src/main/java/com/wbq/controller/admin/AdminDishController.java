@@ -1,7 +1,7 @@
 package com.wbq.controller.admin;
 
 import com.wbq.entity.Dish;
-import com.wbq.entity.PageBean;
+import com.wbq.entity.Page;
 import com.wbq.entity.R;
 import com.wbq.service.IDishService;
 import com.wbq.util.DateUtil;
@@ -29,16 +29,16 @@ public class AdminDishController {
     private String dishImgsFilePath;
 
     @RequestMapping("/list")
-    public R list(@RequestBody PageBean pageBean) {
-        System.out.println(pageBean);
+    public R list(@RequestBody Page page) {
+        System.out.println(page);
         Map<String, Object> map = new HashMap<>();
-        map.put("start", pageBean.getStart());
-        map.put("pageSize", pageBean.getPageSize());
+        map.put("start", page.getStart());
+        map.put("pageSize", page.getPageSize());
         List<Dish> list = dishService.list(map);
         Long total = dishService.getTotal(map);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("dishList", list);
-        resultMap.put("total", total);
+            resultMap.put("total", total);
         return R.ok(resultMap);
     }
 

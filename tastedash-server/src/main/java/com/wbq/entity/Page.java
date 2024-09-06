@@ -3,23 +3,23 @@ package com.wbq.entity;
 import lombok.Data;
 
 @Data
-public class PageBean {
+public class Page {
 
     private int pageNum;
     private int pageSize = 10;
     private int start;
     private String query;
 
-    public PageBean() {
+    public Page() {
     }
 
-    public PageBean(int pageNum, int pageSize, String query) {
+    public Page(int pageNum, int pageSize, String query) {
         this.pageNum = pageNum;
         this.pageSize = pageSize;
         this.query = query;
     }
 
-    public PageBean(int pageNum, int pageSize) {
+    public Page(int pageNum, int pageSize) {
         super();
         this.pageNum = pageNum;
         this.pageSize = pageSize;

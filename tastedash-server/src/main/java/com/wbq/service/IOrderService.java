@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface IOrderService extends IService<Order> {
 
-    public List<Order> list(Map<String, Object> map);
+    public List<Order> getOrderList(Map<String, Object> map);
 
     public Long getTotal(Map<String, Object> map);
 

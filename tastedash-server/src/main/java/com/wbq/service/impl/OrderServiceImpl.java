@@ -19,8 +19,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private OrderMapper orderMapper;
 
     @Override
-    public List<Order> list(Map<String, Object> map) {
-        return orderMapper.list(map);
+    public List<Order> getOrderList(Map<String, Object> map) {
+        return orderMapper.getOrderList(map);
     }
 
     @Override

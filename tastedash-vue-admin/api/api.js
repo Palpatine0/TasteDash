@@ -42,7 +42,7 @@ const urls = class {
         // 下架/上架菜品
         const fromsale = `${url}admin/dish/updateOnSale`
         // 获取订单
-        const obtainorder = `${url}admin/order/list`
+        const getOrderList = `${url}admin/order/getOrderList`
 
         // 查看详细菜单
         const vieworder = `${url}admin/orderDetail/list`
@@ -78,7 +78,7 @@ const urls = class {
             uploaddishes,
             modifydishes,
             fromsale,
-            obtainorder,
+            getOrderList: getOrderList,
             vieworder,
             updateStatus,
             receiving,

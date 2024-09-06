@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wbq.entity.*;
 import com.wbq.service.IOrderDetailService;
 import com.wbq.service.IOrderService;
+import com.wbq.service.IUserService;
+import com.wbq.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,20 +24,34 @@ public class AdminOrderController {
     @Autowired
     private IOrderDetailService orderDetailService;
 
-    @RequestMapping("/list")
-    public R list(@RequestBody PageBean pageBean) {
-        System.out.println(pageBean);
+    @Autowired
+    private IUserService userService;
+
+    @RequestMapping("/getOrderList")
+    public R getOrderList(@RequestBody Page page) {
         Map<String, Object> map = new HashMap<>();
-        map.put("transac_status", pageBean.getQuery().trim());
-        map.put("start", pageBean.getStart());
-        map.put("pageSize", pageBean.getPageSize());
-        List<Order> list = orderService.list(map);
+        if (StringUtil.isNotEmpty(page.getQuery())) {
+            map.put("transac_status", page.getQuery().trim());
+        }
+        map.put("start", page.getStart());
+        map.put("pageSize", page.getPageSize());
+        List<Order> orderList = orderService.getOrderList(map);
         Long total = orderService.getTotal(map);
+
+        for (Order order : orderList) {
+            User user = userService.getUserInfo(order.getUid().toString());
+            if (user != null) {
+                order.setNickname(user.getNickname());
+            }
+        }
+
+        // Add the modified list to the result map
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("orderList", list);
+        resultMap.put("orderList", orderList);
         resultMap.put("total", total);
         return R.ok(resultMap);
     }
+
 
     @PostMapping("/receiving")
     public R receiving(@RequestBody Order order) {

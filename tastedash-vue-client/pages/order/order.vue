@@ -2,8 +2,7 @@
 <view class="details-view">
     <view class="order-top">
         <view class="order-remind">
-            <view>下单成功，坐等开吃</view>
-            <view>菜品已在制作中</view>
+            <view>您的订单信息</view>
         </view>
     </view>
     <view class="food-list" style="background-image: url('https://i.imghippo.com/files/BKQdC1725154197.png')">
@@ -35,7 +34,7 @@
         <!-- 订单号 -->
         <view class="foot-back order-number">
             <text>订单编号：{{ other_data.order_no }}</text>
-            <text>下单时间：{{ other_data.order_time }}</text>
+            <text>下单时间：{{ other_data.createTime }}</text>
             <text>桌台名称：{{ other_data.table_number }}</text>
         </view>
         <view style="height: 300rpx;"></view>
@@ -43,10 +42,10 @@
 
     <div class="opts">
         <view :style="{'padding-bottom': needsTopPadding ? '68rpx' : ''}" @click="orderRedirect">
-            <view class="order-more">加菜</view>
+            <view class="order-more">再来一单</view>
         </view>
         <view :style="{'padding-bottom': needsTopPadding ? '68rpx' : ''}">
-            <view class="pay">结账</view>
+            <view class="pay">确认支付</view>
         </view>
     </div>
 
@@ -58,13 +57,11 @@ import {getBaseUrl, requestUtil} from "../../utils/requestUtil.js"
 
 const app = getApp()
 const {needsTopPadding} = app.globalData
-// 骨架屏
 import Order from '../skeleton-view/order.vue'
 
 const db = wx.cloud.database()
 const _ = db.command
 const good_collect = db.collection('order-data')
-// 价格补零
 const Price = require('e-commerce_price')
 export default {
     components: {Order},
@@ -74,55 +71,49 @@ export default {
             exist: true,
             needsTopPadding,
             Price,
-            overall: 0,//总的多少分
+            overall: 0,
             other_data: {},
-            comp_data: [],//完整数据
-            goods_data: []//前三项数据
+            comp_data: [],
+            goods_data: []
         }
     },
     methods: {
-        async get_menu() {
+        async getOrder() {
             try {
-                // 取出本地缓存的桌号和用餐人数
-                let table_number = wx.getStorageSync('table_num')
+                let tableId = wx.getStorageSync('tableId')
                 const res = await requestUtil({
-                    url: "/order/get",
-                    data: {'table_number': table_number, transac_status: 'unsettled'},
-                    method: "get"
+                    url: "/order/getOrder",
+                    data: {
+                        'table_number': tableId,
+                        transac_status: 'unsettled'
+                    },
+                    method: "POST"
                 })
-                console.log(res)
-
                 let res_data = res.goods_list
-                console.log("res_data2:" + JSON.stringify(res_data))
-
                 this.overall = res_data.length
-                // 总计，订单编号。，下单时间，桌台号
                 this.other_data = res.menu
-
                 this.goods_data = res_data
-                console.log(this.goods_data)
-                console.log(this.goods_data)
-
                 this.exist = false
 
             } catch (e) {
                 //TODO handle the exception
             }
         },
-        // 展开全部
         opEn(index) {
             this.$set(this.goods_data[index], 'goods_list', this.comp_data[index].goods_list)
             this.$set(this.goods_data[index], 'max', 0)
         },
-        // 加菜
+        backToPrv() {
+            uni.navigateBack();
+        },
         orderRedirect() {
             wx.reLaunch({
-                url: '/pages/home-page/page'
+                url: '/pages/menu/menu'
             })
         }
     },
     onLoad() {
-        this.get_menu()
+        this.getOrder()
         this.baseUrl = getBaseUrl()
     }
 }
@@ -143,7 +134,7 @@ page {
 }
 
 .order-remind view:nth-child(1) {
-    font-size: 35rpx;
+    font-size: 42rpx;
     font-weight: bold;
     padding-bottom: 20rpx;
 }
@@ -212,7 +203,6 @@ page {
     font-weight: bold;
 }
 
-/* 展开更多 */
 .expand-more image {
     width: 25rpx;
     height: 25rpx;
@@ -230,7 +220,6 @@ page {
     border-bottom: 1rpx solid #f1f1f2;
 }
 
-/* 总计 */
 .total-price {
     display: flex;
     align-items: center;
@@ -255,7 +244,6 @@ page {
     color: #999999;
 }
 
-/* 订单号 */
 .order-number text {
     display: block;
     padding: 15rpx 0;
@@ -289,7 +277,6 @@ page {
     font-weight: bold;
     color: white;
 }
-
 
 .pay {
     background: #f8be23;

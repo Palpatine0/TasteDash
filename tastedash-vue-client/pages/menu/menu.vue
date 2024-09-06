@@ -5,6 +5,7 @@
         <view class="top-view">
             <view>{{ headcount }}人就餐</view>
             <div class="top-view-flex">
+                <image class="order-history" src="/static/tab/history.svg" @click="orderHistoryRedirect"></image>
                 <img :src="avatar" class="avatar" @click="meToggle">
             </div>
         </view>
@@ -96,7 +97,7 @@ import {getBaseUrl, requestUtil} from "../../utils/requestUtil.js"
 const app = getApp()
 const {needsTopPadding} = app.globalData
 import Home from '../skeleton-view/home.vue'
-import Cart from './components/shopping-cart.vue'
+import Cart from './components/cart.vue'
 import Details from './components/item-details.vue'
 import Me from './components/me.vue'
 import {Code} from '../../config/order.js'
@@ -273,10 +274,11 @@ export default {
             res.forEach(item => {
                 sett_amount += item.total_price
             })
-            let table_number = wx.getStorageSync('table_num')
+            let table_number = wx.getStorageSync('tableId')
             let headcount = wx.getStorageSync('headcount')
 
             let order = {
+                uid: uni.getStorageSync('uid'),
                 table_number,
                 headcount,
                 sett_amount,
@@ -287,8 +289,8 @@ export default {
             }
             const ress = await requestUtil({url: "/order/saveOrder", data: order, method: "post"})
             if (ress.code == 0) {
-                wx.redirectTo({
-                    url: '/pages/order-details/details'
+                wx.navigateTo({
+                    url: '/pages/order/order'
                 })
                 wx.hideLoading()
             }
@@ -323,9 +325,9 @@ export default {
             });
         },
 
-        orderListRedirect() {
-            wx.navigateTo({
-                url: '/pages/order-list/order-list'
+        orderHistoryRedirect() {
+            uni.navigateTo({
+                url: '/pages/order-history/order-history'
             })
         }
     },
@@ -372,7 +374,11 @@ export default {
     width: 40px;
     border-radius: 50px;
 }
-
+.order-history{
+    margin-right: 10px;
+    width: 28px;
+    height: 28px;
+}
 .order-view {
     margin-top: 120rpx;
 }

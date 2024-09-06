@@ -5,27 +5,28 @@
 <mapper namespace="com.wbq.mapper.OrderMapper">
 
     <resultMap type="com.wbq.entity.Order" id="OrderResult">
-
+        <result column="create_time" property="createTime" />
     </resultMap>
+
 
     <resultMap type="com.wbq.entity.SalesVolume" id="SalesVolumeResult">
 
     </resultMap>
 
-
-
-    <select id="list" parameterType="Map" resultMap="OrderResult">
+    <select id="getOrderList" parameterType="Map" resultMap="OrderResult">
         select * from t_order
         <where>
             <if test="transac_status!=null and transac_status!=''">
                 and transac_status = #{transac_status}
             </if>
+            <if test="uid!=null and uid!=''">
+                and uid = #{uid}
+            </if>
         </where>
-        order by order_time desc
+        order by create_time desc
         <if test="start!=null and pageSize!=null">
             limit #{start},#{pageSize}
         </if>
-
     </select>
 
     <select id="getTotal" parameterType="Map" resultType="Long">
@@ -38,7 +39,16 @@
     </select>
 
     <select id="getSalesVolume" resultMap="SalesVolumeResult">
-        SELECT DATE_FORMAT(order_time, '%Y-%m-%d') AS TIME ,SUM(sett_amount) AS sales_volume FROM t_order  WHERE transac_status='success' AND order_receiving='rec_order' GROUP BY TIME  ORDER BY TIME DESC LIMIT 0,7
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m-%d') AS TIME ,SUM(sett_amount) AS sales_volume
+        FROM
+            t_order
+        WHERE transac_status='success' AND order_receiving='rec_order'
+        GROUP BY
+            TIME
+        ORDER BY
+            TIME
+        DESC LIMIT 0,7
     </select>
 
 </mapper>

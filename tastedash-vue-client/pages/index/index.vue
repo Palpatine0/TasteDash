@@ -68,7 +68,7 @@ export default {
         },
         tableIdConfirm(index, item) {
             this.tableId = this.tableIdTmp + 1
-            uni.setStorageSync('table_num', this.tableId)
+            uni.setStorageSync('tableId', this.tableId)
         },
 
         headcountSelect(index, item) {
@@ -79,7 +79,7 @@ export default {
             if (this.headcount <= -1) {
                 return false
             }
-            uni.reLaunch({
+            uni.navigateTo({
                 url: '/pages/menu/menu'
             })
         },
@@ -172,7 +172,7 @@ export default {
     },
     onLoad(e) {
         this.tableId = e.number
-        uni.setStorageSync('table_num', e.number)
+        uni.setStorageSync('tableId', e.number)
         const storageInfoSync = uni.getStorageInfoSync();
         console.log("storageInfoSync")
         console.log(storageInfoSync)

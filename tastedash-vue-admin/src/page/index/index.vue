@@ -1,10 +1,5 @@
 <template>
 <div style="position: relative;">
-    <!-- 顶部 -->
-    <div class="sidebar-top">
-        <div>在线订餐</div>
-        <div @click="signOut()">退出</div>
-    </div>
     <div class="sidebar-cont">
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="vertical" @select="handleSelect">
             <div v-for="(item,index) in sidebar" :key="index">
@@ -32,12 +27,11 @@
             </div>
             <div style="height: 50px;"></div>
         </el-menu>
+        <div @click="signOut()">退出</div>
     </div>
-    <div>
-        <audio src="https://diancan-1252107261.cos.accelerate.myqcloud.com/mp3/dingdantixing.mp3" ref="audio"></audio>
-    </div>
-    <!--二级路由渲染-->
-    <router-view></router-view>
+    <router-view>
+
+    </router-view>
 </div>
 </template>
 
@@ -171,12 +165,10 @@ export default {
 
 .sidebar-cont {
     position: fixed;
-    top: 50px;
     left: 0;
-    bottom: 50px;
     background: #FFFFFF;
     width: 200px;
-    height: 100vh;
+    height: 100%;
     color: #000000 !important;
     font-size: 16px;
     overflow-y: auto;
