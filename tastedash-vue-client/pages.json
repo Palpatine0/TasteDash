@@ -28,6 +28,13 @@
 				"navigationBarTitleText":"历史订单",
 				"navigationBarBackgroundColor":"#fefefe"
 			}
+		},
+		{
+			"path":"pages/me/me",
+			"style":{
+				"navigationBarTitleText":"我的",
+				"navigationBarBackgroundColor":"#fefefe"
+			}
 		}
 
 	],

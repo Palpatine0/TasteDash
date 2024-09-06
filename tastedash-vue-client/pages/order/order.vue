@@ -5,7 +5,7 @@
             <view>您的订单信息</view>
         </view>
     </view>
-    <view class="food-list" style="background-image: url('https://i.imghippo.com/files/BKQdC1725154197.png')">
+    <view class="food-list">
         <view class="foot-back">
             <view class="foot-til">
                 <text>我的订单</text>
@@ -150,6 +150,7 @@ page {
     left: 20rpx;
     right: 20rpx;
     border-radius: 50rpx;
+    background-image: url('https://i.imghippo.com/files/BKQdC1725154197.png');
 }
 
 .foot-back {

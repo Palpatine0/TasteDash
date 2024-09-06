@@ -5,8 +5,7 @@
         <view class="top-view">
             <view>{{ headcount }}人就餐</view>
             <div class="top-view-flex">
-                <image class="order-history" src="/static/tab/history.svg" @click="orderHistoryRedirect"></image>
-                <img :src="avatar" class="avatar" @click="meToggle">
+                <img :src="avatar" class="avatar" @click="meRedirect">
             </div>
         </view>
         <view class="order-view">
@@ -83,10 +82,10 @@
         </view>
     </view>
 
+    <!--widgets-->
     <Cart v-if="cardVisible" :cartItemList="cartItemList"></Cart>
     <Details v-if="itemDetailVisible" :itemDetail="itemDetail"></Details>
     <Home v-if="exist"></Home>
-    <Me v-if="meVisible" :userInfo="userInfo"></Me>
 
 </view>
 </template>
@@ -99,7 +98,6 @@ const {needsTopPadding} = app.globalData
 import Home from '../skeleton-view/home.vue'
 import Cart from './components/cart.vue'
 import Details from './components/item-details.vue'
-import Me from './components/me.vue'
 import {Code} from '../../config/order.js'
 
 const db = wx.cloud.database()
@@ -107,7 +105,7 @@ const _ = db.command
 const good_collect = db.collection('order-data')
 const dishes_data = db.collection('dishes-data')
 export default {
-    components: {Me, Cart, Details, Home},
+    components: {Cart, Details, Home},
     data() {
         return {
             requestUrl: getApp().globalData.requestUrl,
@@ -115,7 +113,7 @@ export default {
             heightset: [],
             topHeight: 0,
 
-            meVisible: false,
+
             avatar: "",
             userInfo: [],
 
@@ -329,6 +327,11 @@ export default {
             uni.navigateTo({
                 url: '/pages/order-history/order-history'
             })
+        },
+        meRedirect() {
+            uni.navigateTo({
+                url: '/pages/me/me'
+            })
         }
     },
     onLoad() {
@@ -374,11 +377,13 @@ export default {
     width: 40px;
     border-radius: 50px;
 }
-.order-history{
+
+.order-history {
     margin-right: 10px;
     width: 28px;
     height: 28px;
 }
+
 .order-view {
     margin-top: 120rpx;
 }

@@ -7,8 +7,8 @@
             <img class="qrcode" :src="shareQr" alt="QR Code">
             <view class="share-tip">通过分享此二维码邀请他人点餐，您可获得其消费总额10%的返现额度!</view>
         </view>
-        <view class="user-info">
-            <div class="username">{{ userInfo.nickname }}</div>
+        <view class="info">
+            <div class="username">{{ userInfo.nickname }}</div><br>
             <div class="credit">您的额度: {{ userInfo.credit }}</div>
         </view>
         <button class="withdraw-button" @click="withdraw">提现</button>
@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import {requestUtil} from "../../../utils/requestUtil";
 
 export default {
     data() {
@@ -28,7 +27,7 @@ export default {
     props: {userInfo: Object},
     methods: {
         close() {
-            this.$parent.meToggle(false);
+            this.$parent.qeShareToggle(false);
         },
         withdraw() {
         },
@@ -40,10 +39,16 @@ export default {
 @import '../../../style/shadow.css';
 
 .share-container {
+    z-index: 1000;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 
@@ -71,7 +76,7 @@ export default {
     margin-top: 10px;
 }
 
-.user-info {
+.info {
     margin: 20px 0;
 }
 
