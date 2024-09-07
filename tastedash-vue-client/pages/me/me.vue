@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import QrShare from "./components/qr-share.vue";
+import QrShare from "../../components/qr-share.vue";
 
 export default {
     components: {QrShare},

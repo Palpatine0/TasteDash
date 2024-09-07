@@ -13,7 +13,7 @@
 
     <div v-else>
         <div v-if="tableId==null" class="headcount-select">
-            <div class="demand">请选择桌号</div>
+            <div class="tips">请选择桌号</div>
             <div class="scroll-text scroll">
                 <scroll-view scroll-x="true" class="scroll-view_H" :enable-flex="true">
                     <div class="table-block">
@@ -26,7 +26,7 @@
             <div class="confirm-btn" :class="[tableIdTmp > -1 ? 'confirm-btn-available' : '']" @click="tableIdConfirm()">确认</div>
         </div>
         <div v-else class="headcount-select">
-            <div class="demand">请选择就餐人数</div>
+            <div class="tips">请选择就餐人数</div>
             <div class="scroll-text">桌号：{{ tableId }}</div>
             <div class="scroll-text scroll">
                 <scroll-view scroll-x="true" class="scroll-view_H" :enable-flex="true">
@@ -83,7 +83,6 @@ export default {
                 url: '/pages/menu/menu'
             })
         },
-
 
         getUserInfo(e) {
             var openid = "";
@@ -226,7 +225,7 @@ page {
     border-radius: 15rpx;
 }
 
-.demand {
+.tips {
     height: 80rpx;
     font-size: 35rpx;
     font-weight: bold;

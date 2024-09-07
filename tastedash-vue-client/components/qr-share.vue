@@ -36,7 +36,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../../../style/shadow.css';
+@import '../style/shadow.css';
 
 .share-container {
     z-index: 1000;

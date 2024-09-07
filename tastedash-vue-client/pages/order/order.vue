@@ -13,7 +13,7 @@
             <block v-for="(item,index) in goods_data" :key="index">
                 <view class="foot-deta">
                     <view>
-                        <image :src="baseUrl+'/image/dish/'+item.image" mode="aspectFill"></image>
+                        <image :src="requestUrl+'/image/dish/'+item.image" mode="aspectFill"></image>
                     </view>
                     <view class="foot-name">
                         <text>{{ item.name }}</text>
@@ -49,26 +49,27 @@
         </view>
     </div>
 
+    <SkeletonOrder v-if="skeletonVisible"></SkeletonOrder>
+
 </view>
 </template>
 
 <script>
-import {getBaseUrl, requestUtil} from "../../utils/requestUtil.js"
+import {requestUtil} from "../../utils/requestUtil.js"
 
 const app = getApp()
 const {needsTopPadding} = app.globalData
-import Order from '../skeleton-view/order.vue'
+import SkeletonOrder from '../../components/skeleton/skeleton-order.vue'
 
 const db = wx.cloud.database()
-const _ = db.command
-const good_collect = db.collection('order-data')
 const Price = require('e-commerce_price')
 export default {
-    components: {Order},
+    components: {SkeletonOrder},
     data() {
         return {
-            baseUrl: '',
-            exist: true,
+            requestUrl: getApp().globalData.requestUrl,
+
+            skeletonVisible: true,
             needsTopPadding,
             Price,
             overall: 0,
@@ -93,18 +94,11 @@ export default {
                 this.overall = res_data.length
                 this.other_data = res.menu
                 this.goods_data = res_data
-                this.exist = false
+                this.skeletonVisible = false
 
             } catch (e) {
                 //TODO handle the exception
             }
-        },
-        opEn(index) {
-            this.$set(this.goods_data[index], 'goods_list', this.comp_data[index].goods_list)
-            this.$set(this.goods_data[index], 'max', 0)
-        },
-        backToPrv() {
-            uni.navigateBack();
         },
         orderRedirect() {
             wx.reLaunch({
@@ -114,7 +108,6 @@ export default {
     },
     onLoad() {
         this.getOrder()
-        this.baseUrl = getBaseUrl()
     }
 }
 </script>

@@ -1,5 +1,4 @@
 <template>
-<!-- 弹出购物车 -->
 <view>
     <view class="mask" @click="close()"></view>
     <view class="widget-popup coup-anim">
@@ -7,7 +6,6 @@
             <image src="/static/tab/qingkong.svg" mode="widthFix"></image>
             <text @click="emptyCart()">清空已点</text>
         </view>
-        <!-- 商品列表 -->
         <block v-for="(item,index) in cartItemList" :key="index">
             <view class="item-list" v-if="item.quantity > 0">
                 <view class="item-list-image">
@@ -17,7 +15,6 @@
                     <view>{{ item.name }}</view>
                     <view class="list-text">
                         <text>¥</text>
-                        <!-- 总价 -->
                         <text>{{ item.total_price }}</text>
                     </view>
                 </view>
@@ -38,8 +35,6 @@
 </template>
 
 <script>
-import {getBaseUrl, requestUtil} from "../../../utils/requestUtil.js"
-
 export default {
     data() {
         return {
@@ -67,7 +62,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../../../style/shadow.css';
+@import '../style/shadow.css';
 
 .empty image {
     width: 25rpx;

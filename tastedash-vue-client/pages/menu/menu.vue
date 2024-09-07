@@ -74,7 +74,7 @@
                         </view>
                         <view class="cart-title" v-if="total_quantity > 0">已点{{ total_quantity }}份菜品</view>
                         <view class="place-order" @click="orderConfirm">
-                            <button plain="true" open-type="getUserInfo"><p>下单</p></button>
+                            <button plain="true" ><p>下单</p></button>
                         </view>
                     </view>
                 </view>
@@ -85,19 +85,19 @@
     <!--widgets-->
     <Cart v-if="cardVisible" :cartItemList="cartItemList"></Cart>
     <Details v-if="itemDetailVisible" :itemDetail="itemDetail"></Details>
-    <Home v-if="exist"></Home>
+    <SkeletonMenu v-if="skeletonVisible"></SkeletonMenu>
 
 </view>
 </template>
 
 <script>
-import {getBaseUrl, requestUtil} from "../../utils/requestUtil.js"
+import {requestUtil} from "../../utils/requestUtil.js"
 
 const app = getApp()
 const {needsTopPadding} = app.globalData
-import Home from '../skeleton-view/home.vue'
-import Cart from './components/cart.vue'
-import Details from './components/item-details.vue'
+import SkeletonMenu from '../../components/skeleton/skeleton-menu.vue'
+import Cart from '../../components/cart.vue'
+import Details from '../../components/item-details.vue'
 import {Code} from '../../config/order.js'
 
 const db = wx.cloud.database()
@@ -105,14 +105,19 @@ const _ = db.command
 const good_collect = db.collection('order-data')
 const dishes_data = db.collection('dishes-data')
 export default {
-    components: {Cart, Details, Home},
+    components: {Cart, Details, SkeletonMenu},
     data() {
         return {
             requestUrl: getApp().globalData.requestUrl,
 
+            skeletonVisible: true,
             heightset: [],
             topHeight: 0,
-
+            needsTopPadding,
+            trigger: 0,
+            scrollInto: '',
+            tmplIds: 'FANEJh9NPNhJrLpqQx7UhNerntR5GwEsLKK-95tuvNM',
+            headcount: 0,
 
             avatar: "",
             userInfo: [],
@@ -123,16 +128,8 @@ export default {
             itemDetail: {},
             itemList: [],
 
-            exist: true,
-            needsTopPadding,
-            trigger: 0,
-
-            scrollInto: '',
             cardVisible: false,
             cartItemList: [],
-
-            tmplIds: 'FANEJh9NPNhJrLpqQx7UhNerntR5GwEsLKK-95tuvNM',
-            headcount: 0,
         }
     },
     methods: {
@@ -251,7 +248,7 @@ export default {
                     cate_height += item.height
                     this.heightset.push(cate_height)
                 })
-                this.exist = false
+                this.skeletonVisible = false
             })
         },
         orderConfirm() {
@@ -293,27 +290,11 @@ export default {
                 wx.hideLoading()
             }
         },
-        meToggle() {
-            this.meVisible = !this.meVisible
-        },
-        getUserInfo() {
-            uni.request({
-                url: getApp().globalData.requestUrl + '/user/getUserInfo',
-                method: 'POST',
-                data: {
-                    id: uni.getStorageSync("uid")
-                },
-                success: (res) => {
-                    this.userInfo = res.data
-                    console.log(this.userInfo)
-                },
-            });
-        },
         pushMessage() {
             var pubsub = this.goeasy.pubsub;
             pubsub.publish({
                 channel: "my_channel",
-                message: "小程序端来的",
+                message: "来自小程序端",
                 onSuccess: () => {
                     console.log("消息发布成功");
                 },
@@ -338,7 +319,6 @@ export default {
         this.headcount = wx.getStorageSync('headcount')
         this.avatar = uni.getStorageSync('avatar');
         this.getDishesInfo()
-        this.getUserInfo()
     },
     computed: {
         total_quantity() {

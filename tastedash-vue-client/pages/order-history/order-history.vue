@@ -7,7 +7,7 @@
                     <block v-for="(item, index) in order.goods_list" :key="index">
                         <view class="foot-deta">
                             <view>
-                                <image :src="baseUrl+'/image/dish/'+item.image" mode="aspectFill" class="item-image"></image>
+                                <image :src="requestUrl+'/image/dish/'+item.image" mode="aspectFill" class="item-image"></image>
                             </view>
                             <view class="foot-name">
                                 <text>{{ item.name }}</text>
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import {getBaseUrl, requestUtil} from "../../utils/requestUtil.js"
+import {requestUtil} from "../../utils/requestUtil.js"
 
 const app = getApp()
 const {needsTopPadding} = app.globalData
@@ -48,11 +48,12 @@ import Price from 'e-commerce_price'
 export default {
     data() {
         return {
-            baseUrl: '',
-            exist: true,
+            requestUrl: getApp().globalData.requestUrl,
+            
+            skeletonVisible: true,
             needsTopPadding,
             Price,
-            orderList: [] // Store all orders here
+            orderList: []
         }
     },
     methods: {
@@ -67,7 +68,7 @@ export default {
                 })
                 // Assign the returned orderList to your component's data
                 this.orderList = res.orderList || []
-                this.exist = false
+                this.skeletonVisible = false
             } catch (e) {
                 console.error(e)
             }
@@ -80,7 +81,6 @@ export default {
     },
     onLoad() {
         this.getOrderListByUid()
-        this.baseUrl = getBaseUrl()
     }
 }
 

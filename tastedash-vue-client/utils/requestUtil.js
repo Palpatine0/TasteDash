@@ -4,9 +4,6 @@ let ajaxTimes = 0;
 
 const requestUrl = app.globalData.requestUrl
 
-export const getBaseUrl = () => {
-    return requestUrl;
-}
 
 export const requestUtil = (params) => {
     let header = {...params.header};

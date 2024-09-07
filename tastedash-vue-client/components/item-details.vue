@@ -58,7 +58,7 @@ export default {
 </script>
 
 <style scoped>
-@import '../../../style/shadow.css';
+@import '../style/shadow.css';
 
 .item-image {
     width: 100%;
