@@ -35,11 +35,12 @@
                 <div class="remarks-text">
                     <el-button type="small" :loading="index == deta_load ? true : false" @click="detailed_menu(index,item.id)">详细菜单</el-button>
                 </div>
-                <div>{{ Price(item.sett_amount) }}</div>
+                <div>{{ Price(item.sett_amount) }}(元)</div>
+                <div v-if="item.paymentStatus==0">未支付</div>
+                <div v-if="item.paymentStatus==1">已支付</div>
                 <div>
-                    <el-button type="info" size="small" v-if="item.order_receiving == 'mis_orders'" :loading="index == rece_load ? true : false" @click="receiving(index,item.id)">待接单</el-button>
-                    <el-button size="small" type="success" disabled v-if="item.transac_status == 'success'">已结账</el-button>
-                    <el-button size="small" type="success" v-if="item.transac_status == 'unsettled' && item.order_receiving=='rec_order'" :loading="index == check_load ? true : false" @click="checkout(index,item.id)">待结账</el-button>
+                    <el-button type="info" size="small" v-if="item.handlingStatus == 0" :loading="index == rece_load ? true : false" @click="updateHandlingStatus(index,item.id,item.handlingStatus)">待接单</el-button>
+                    <el-button type="success" size="small" v-if="item.handlingStatus == 1" :loading="index == rece_load ? true : false" @click="updateHandlingStatus(index,item.id,item.handlingStatus)">已接单</el-button>
                 </div>
             </div>
             <el-pagination
@@ -75,15 +76,13 @@
 </template>
 
 <script>
-// 交易状态
-import {staff} from '../../../config/state-type.js'
-// 价格补领
+import {paymentStatus} from '../../../config/state-type.js'
 const Price = require('e-commerce_price')
 export default {
     data() {
         return {
             Price: Price,
-            options: staff(),
+            options: paymentStatus(),
             loading: true,
             nodatas: true,
             dialogVisible: false,
@@ -100,7 +99,7 @@ export default {
                     return time.getTime() > Date.now();
                 }
             },
-            tablist: ['交易时间', '用户昵称', '桌号', '用餐人数', '菜单详情', '交易金额(元)', '交易状态'],
+            tablist: ['交易时间', '用户昵称', '桌号', '用餐人数', '菜单详情', '交易金额', '支付状态', '接单状态'],
             tabcont: [],
             user_menu: [],
             dingdan: 0,
@@ -140,26 +139,17 @@ export default {
                 new this.mytitle(this.$message, 'error', '服务器发生错误,请重试').funtitle()
             }
         },
-        async receiving(index, id) {
-            this.rece_load = index
-            try {
-                let res = await new this.Request(this.Urls.m().receiving, {id: id, order_receiving: 'rec_order'}).modepost()
-                this.$set(this.tabcont[index], 'order_receiving', 'rec_order')
-                new this.mytitle(this.$message, 'success', '执行成功').funtitle()
-            } catch (e) {
-                new this.mytitle(this.$message, 'error', '服务器发生错误,请重试').funtitle()
-            }
-        },
-        async checkout(index, id) {
+        async updateHandlingStatus(index, id, handlingStatus) {
             this.check_load = index
             try {
-                let res = await new this.Request(this.Urls.m().checkout, {id: id, transac_status: 'success'}).modepost()
+                let res = await new this.Request(this.Urls.m().updateHandlingStatus, {id: id, handlingStatus: handlingStatus}).modepost()
                 console.log(res)
                 this.$set(this.tabcont[index], 'transac_status', 'success')
                 new this.mytitle(this.$message, 'success', '执行成功').funtitle()
             } catch (e) {
                 new this.mytitle(this.$message, 'error', '服务器发生错误,请重试').funtitle()
             }
+            this.refresh_order();
         },
         refresh_order() {
             this.loading = true

@@ -34,11 +34,11 @@ export default {
         // 登录
         async signin() {
             if (this.userName == '') {
-                new this.mytitle(this.$message, 'warning', '请输入用户名！').funtitle()
+                new this.mytitle(this.$message, 'warning', '请输入用户名').funtitle()
                 return;
             }
             if (this.password == '') {
-                new this.mytitle(this.$message, 'warning', '请输入密码！').funtitle()
+                new this.mytitle(this.$message, 'warning', '请输入密码').funtitle()
                 return;
             }
             this.load = true
@@ -47,7 +47,7 @@ export default {
                 let res = await new this.Request(this.Urls.m().login, obj).modepost()
                 console.log(res)
                 if (res.data.code != 0) {
-                    new this.mytitle(this.$message, 'warning', '用户名或者密码错误！').funtitle()
+                    new this.mytitle(this.$message, 'warning', '用户名或者密码错误').funtitle()
                 } else {
                     let ids = '1'
                     console.log("token:" + res.data.token)
@@ -60,7 +60,7 @@ export default {
             } catch (e) {
                 console.log(e)
                 this.load = false
-                new this.mytitle(this.$message, 'info', '发生错误,重试').funtitle()
+                new this.mytitle(this.$message, 'info', '发生错误,请重试').funtitle()
             }
         }
     }

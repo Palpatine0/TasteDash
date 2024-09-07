@@ -17,6 +17,5 @@ public class AccessTokenUrl {
         System.out.println(token);
         JSONObject jsonObject = JSON.parseObject(token);
         System.out.println(jsonObject.get("access_token"));
-
     }
 }

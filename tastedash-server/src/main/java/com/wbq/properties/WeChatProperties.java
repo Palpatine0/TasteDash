@@ -15,27 +15,4 @@ public class WeChatProperties {
 
     private String secret; // wechat miniapp appSecret
 
-    public String getAccessTokenUrl() {
-        return accessTokenUrl;
-    }
-
-    public void setAccessTokenUrl(String accessTokenUrl) {
-        this.accessTokenUrl = accessTokenUrl;
-    }
-
-    public String getAppid() {
-        return appid;
-    }
-
-    public void setAppid(String appid) {
-        this.appid = appid;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
 }

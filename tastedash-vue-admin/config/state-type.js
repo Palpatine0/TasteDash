@@ -1,18 +1,17 @@
-// 交易状态
-let staff = function () {
+let paymentStatus = function () {
     let options = [
         {
-            value: 'success',
-            label: '已结账'
-        }, {
-            value: 'unsettled',
-            label: '待结账'
+            value: 1,
+            label: '已支付'
+        },
+        {
+            value: 0,
+            label: '未支付'
         }
     ]
     return options
 }
 
-// 菜品类目：从数据库获取，这个不需要了
 let category = function () {
     let options = [
         {
@@ -35,7 +34,6 @@ let category = function () {
     return options
 }
 
-// 规格：从数据库获取，这个不需要了
 let company = function () {
     let options = [
         {
@@ -66,4 +64,4 @@ let company = function () {
     return options
 }
 
-export {staff, category, company}
+export {paymentStatus, category, company}

@@ -27,9 +27,11 @@ public class Order {
 
     private Double sett_amount;
 
-    private String transac_status;
+    @TableField("payment_status")
+    private Integer paymentStatus;
 
-    private String order_receiving;
+    @TableField("handling_status")
+    private Integer handlingStatus;
 
     @TableField("create_time")
     @JsonSerialize(using=CustomDateTimeSerializer.class)

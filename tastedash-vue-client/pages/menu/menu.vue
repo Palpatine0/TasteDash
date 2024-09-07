@@ -74,7 +74,7 @@
                         </view>
                         <view class="cart-title" v-if="total_quantity > 0">已点{{ total_quantity }}份菜品</view>
                         <view class="place-order" @click="orderConfirm">
-                            <button plain="true" ><p>下单</p></button>
+                            <button plain="true"><p>下单</p></button>
                         </view>
                     </view>
                 </view>
@@ -278,14 +278,14 @@ export default {
                 headcount,
                 sett_amount,
                 order_no: Code(),
-                transac_status: 'unsettled',
-                order_receiving: 'mis_orders',
+                paymentStatus: 0,
+                handlingStatus: 0,
                 goods_list: res
             }
             const ress = await requestUtil({url: "/order/saveOrder", data: order, method: "post"})
             if (ress.code == 0) {
                 wx.navigateTo({
-                    url: '/pages/order/order'
+                    url: '/pages/order/order?oid='+ress.oid
                 })
                 wx.hideLoading()
             }

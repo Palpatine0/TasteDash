@@ -39,19 +39,19 @@ public class OrderController {
     public R saveOrder(@RequestBody Order order) {
         order.setCreateTime(new Date());
         orderService.save(order);
-        for (OrderDetail od : order.getGoods_list()) {
-            od.setMId(order.getId());
-            orderDetailService.save(od);
+        for (OrderDetail orderDetail : order.getGoods_list()) {
+            orderDetail.setMId(order.getId());
+            orderDetailService.save(orderDetail);
         }
-        return R.ok();
+        Map<String, Object> map = new HashMap<>();
+        map.put("oid", order.getId());
+        return R.ok(map);
     }
 
     @RequestMapping("/getOrder")
     public R getOrder(@RequestBody Map<String, String> dto) {
         QueryWrapper<Order> orderWrapper = new QueryWrapper<>();
-        orderWrapper.eq("table_number", dto.get("table_number"));
-        orderWrapper.eq("transac_status", dto.get("transac_status"));
-        orderWrapper.orderByDesc("create_time");
+        orderWrapper.eq("id", dto.get("oid"));
         Order order = orderService.list(orderWrapper).get(0);
 
         QueryWrapper<OrderDetail> detailQueryWrapper = new QueryWrapper<>();

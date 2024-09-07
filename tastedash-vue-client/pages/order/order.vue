@@ -3,6 +3,7 @@
     <view class="order-top">
         <view class="order-remind">
             <view>您的订单信息</view>
+            <view>下单后需要等15分钟</view>
         </view>
     </view>
     <view class="food-list">
@@ -44,7 +45,7 @@
         <view :style="{'padding-bottom': needsTopPadding ? '68rpx' : ''}" @click="orderRedirect">
             <view class="order-more">再来一单</view>
         </view>
-        <view :style="{'padding-bottom': needsTopPadding ? '68rpx' : ''}">
+        <view :style="{'padding-bottom': needsTopPadding ? '68rpx' : ''}" @click="orderPay">
             <view class="pay">确认支付</view>
         </view>
     </div>
@@ -75,18 +76,18 @@ export default {
             overall: 0,
             other_data: {},
             comp_data: [],
-            goods_data: []
+            goods_data: [],
+
+            oid: ""
         }
     },
     methods: {
         async getOrder() {
             try {
-                let tableId = wx.getStorageSync('tableId')
                 const res = await requestUtil({
                     url: "/order/getOrder",
                     data: {
-                        'table_number': tableId,
-                        transac_status: 'unsettled'
+                        oid: this.oid,
                     },
                     method: "POST"
                 })
@@ -104,9 +105,32 @@ export default {
             wx.reLaunch({
                 url: '/pages/menu/menu'
             })
+        },
+        orderPay() {
+            wx.showLoading({
+                title: '加载中',
+            })
+            uni.request({
+                url: requestUrl + 'order/pay',
+                method: 'POST',
+                data: {
+                    orderid: other_data.order_no,
+                    uid: wx.getStorageSync('uid'),
+                    openid: wx.getStorageSync('openid')
+                },
+                success(res) {
+                    console.log("success")
+                    wx.hideLoading()
+                },
+                fail(err) {
+                    console.log("err")
+                    wx.hideLoading()
+                }
+            })
         }
     },
-    onLoad() {
+    onLoad(params) {
+        this.oid = params.oid;
         this.getOrder()
     }
 }

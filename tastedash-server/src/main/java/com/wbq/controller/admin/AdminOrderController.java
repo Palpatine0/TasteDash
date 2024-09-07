@@ -1,5 +1,6 @@
 package com.wbq.controller.admin;
 
+import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wbq.entity.*;
 import com.wbq.service.IOrderDetailService;
@@ -31,7 +32,7 @@ public class AdminOrderController {
     public R getOrderList(@RequestBody Page page) {
         Map<String, Object> map = new HashMap<>();
         if (StringUtil.isNotEmpty(page.getQuery())) {
-            map.put("transac_status", page.getQuery().trim());
+            map.put("payment_status", page.getQuery().trim());
         }
         map.put("start", page.getStart());
         map.put("pageSize", page.getPageSize());
@@ -52,19 +53,14 @@ public class AdminOrderController {
         return R.ok(resultMap);
     }
 
-
-    @PostMapping("/receiving")
-    public R receiving(@RequestBody Order order) {
+    @PostMapping("/updateHandlingStatus")
+    public R updateHandlingStatus(@RequestBody Order order) {
         Order resultOrder = orderService.getById(order.getId());
-        resultOrder.setOrder_receiving(order.getOrder_receiving());
-        orderService.updateById(resultOrder);
-        return R.ok();
-    }
-
-    @PostMapping("/checkout")
-    public R checkout(@RequestBody Order order) {
-        Order resultOrder = orderService.getById(order.getId());
-        resultOrder.setTransac_status(order.getTransac_status());
+        if (order.getHandlingStatus() == 0) {
+            resultOrder.setHandlingStatus(1);
+        } else {
+            resultOrder.setHandlingStatus(0);
+        }
         orderService.updateById(resultOrder);
         return R.ok();
     }
