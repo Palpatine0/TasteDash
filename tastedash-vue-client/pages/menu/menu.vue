@@ -84,7 +84,7 @@
 
     <!--widgets-->
     <Cart v-if="cardVisible" :cartItemList="cartItemList"></Cart>
-    <Details v-if="itemDetailVisible" :itemDetail="itemDetail"></Details>
+    <ItemDetails v-if="itemDetailVisible" :itemDetail="itemDetail"></ItemDetails>
     <SkeletonMenu v-if="skeletonVisible"></SkeletonMenu>
 
 </view>
@@ -97,15 +97,11 @@ const app = getApp()
 const {needsTopPadding} = app.globalData
 import SkeletonMenu from '../../components/skeleton/skeleton-menu.vue'
 import Cart from '../../components/cart.vue'
-import Details from '../../components/item-details.vue'
+import ItemDetails from '../../components/itemDetails.vue'
 import {Code} from '../../config/order.js'
 
-const db = wx.cloud.database()
-const _ = db.command
-const good_collect = db.collection('order-data')
-const dishes_data = db.collection('dishes-data')
 export default {
-    components: {Cart, Details, SkeletonMenu},
+    components: {Cart, ItemDetails, SkeletonMenu},
     data() {
         return {
             requestUrl: getApp().globalData.requestUrl,

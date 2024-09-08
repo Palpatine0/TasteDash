@@ -28,6 +28,8 @@ public class User {
 
     private Integer credit;
 
+    private Integer balance;
+
     @TableField("create_time")
     @JsonSerialize(using=CustomDateTimeSerializer.class)
     private Date createTime;

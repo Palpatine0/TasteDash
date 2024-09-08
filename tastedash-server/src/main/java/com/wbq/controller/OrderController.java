@@ -58,8 +58,8 @@ public class OrderController {
         detailQueryWrapper.eq("mId", order.getId());
         List<OrderDetail> goods_list = orderDetailService.list(detailQueryWrapper);
         Map<String, Object> map = new HashMap<>();
-        map.put("goods_list", goods_list);
-        map.put("menu", order);
+        map.put("dishList", goods_list);
+        map.put("order", order);
         return R.ok(map);
     }
 
@@ -87,5 +87,21 @@ public class OrderController {
         return R.ok(resultMap);
     }
 
+    @RequestMapping("/updateOrderPaymentStatus")
+    public void updateOrderPaymentStatus(@RequestBody Map<String, String> dto) {
+        QueryWrapper<Order> orderWrapper = new QueryWrapper<>();
+        orderWrapper.eq("id", dto.get("oid"));
+        Order order = orderService.getOne(orderWrapper);
+        order.setPaymentStatus(1);
+        orderService.updateById(order);
+    }
 
+    @RequestMapping("/pay")
+    public R pay(@RequestBody Map<String, String> dto) {
+        if (true) {
+            return R.ok("支付成功");
+        } else {
+            return R.error("支付失败");
+        }
+    }
 }

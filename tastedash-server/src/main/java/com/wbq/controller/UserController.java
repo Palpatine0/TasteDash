@@ -40,6 +40,15 @@ public class UserController {
         return userService.getUserInfo(id);
     }
 
+    @PostMapping("updateUserBalance")
+    public void updateUserBalance(@RequestBody Map<String, String> dto) {
+        String id = dto.get("id");
+        User user = userService.getUserInfo(id);
+        int oldBalance = user.getBalance();
+        user.setBalance(oldBalance += Integer.parseInt(dto.get("balance")));
+        userService.updateById(user);
+    }
+
 
 }
 

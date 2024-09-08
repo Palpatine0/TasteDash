@@ -20,9 +20,9 @@
             <view class="balance-card">
                 <view class="balance-details">
                     <text style="font-size: 14px">您的余额</text>
-                    <text class="balance-amount">¥ {{ userBalance }}</text>
+                    <text class="balance-amount">¥ {{ userInfo.balance }}</text>
                 </view>
-                <view class="pay-button">充值</view>
+                <view class="pay-button" @click="topUpToggle()">充值</view>
             </view>
         </view>
     </view>
@@ -57,20 +57,22 @@
 
     <!--widgets-->
     <QrShare v-if="qeShareVisible" :userInfo="userInfo"></QrShare>
+    <TopUp v-if="topUpVisible" :userInfo="userInfo"></TopUp>
 </view>
 </template>
 
 <script>
-import QrShare from "../../components/qr-share.vue";
+import QrShare from "../../components/qrShare.vue";
+import TopUp from "../../components/topUp.vue";
 
 export default {
-    components: {QrShare},
+    components: {QrShare, TopUp},
     data() {
         return {
             userInfo: {},
             userBalance: 0.00,
-
             qeShareVisible: false,
+            topUpVisible: false,
         };
     },
     methods: {
@@ -94,6 +96,9 @@ export default {
             uni.navigateTo({
                 url: '/pages/order-history/order-history'
             })
+        },
+        topUpToggle() {
+            this.topUpVisible = !this.topUpVisible
         }
     },
     onLoad() {
