@@ -1,80 +1,95 @@
 <template>
-<view class="charge-container">
+<view class="payment-container">
     <view class="mask" @click="close()"></view>
-    <view class="widget-center charge-anim">
-        <view class="charge-header">余额充值</view>
+    <view class="widget-center payment-anim">
+        <view class="payment-header">选择支付方式</view>
 
-        <!-- Predefined Amount Buttons -->
-        <view class="charge-options">
-            <button class="charge-button" @click="setAmount(50)">¥50</button>
-            <button class="charge-button" @click="setAmount(100)">¥100</button>
-            <button class="charge-button" @click="setAmount(150)">¥150</button>
+        <!-- Payment Method Selection -->
+        <view class="payment-methods">
+            <button class="payment-button" style="background-color: #25b671" @click="payWithWeChat">微信支付</button>
+            <button class="payment-button" :disabled="!balanceAdequate" @click="payWithBalance">余额支付</button>
+            <div class="payment-method-title">
+                您的余额:¥{{ userInfo.balance }}
+                <div v-if="!balanceAdequate">(余额不足)</div>
+            </div>
         </view>
 
-        <!-- Custom Amount Input -->
-        <view class="custom-charge">
-            <input v-model="balance" type="number" placeholder="自定义金额"/>
-            <button class="charge-button" @click="setCustomAmount" style="height: 45px;padding: 0 !important;background-color: gray;">充值自定义金额</button>
-        </view>
-
-        <!-- Display Selected Amount -->
-        <view class="info">
-            <div class="credit">充值金额: ¥{{ selectedAmount }}</div>
-        </view>
-
-        <!-- Confirm Button -->
-        <button class="confirm-button" @click="confirmCharge">确认充值</button>
     </view>
 </view>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            selectedAmount: 0,
-            balance: '',
-        };
-    },
-    props: {userInfo: Object},
+    props: {userInfo: Object, orderInfo: Object, balanceAdequate: Boolean},
     methods: {
         close() {
-            this.$parent.topUpToggle(false);
+            this.$parent.paymentMethodSelectionToggle(false);
         },
-        setAmount(amount) {
-            this.selectedAmount = amount;
+
+        payWithWeChat() {
+            wx.showLoading({
+                title: '加载中',
+            })
+            uni.request({
+                url: getApp().globalData.requestUrl + '/order/payWithWeChat',
+                method: 'POST',
+                data: {
+                    oid: this.orderInfo.order_no,
+                    uid: wx.getStorageSync('uid'),
+                    openid: wx.getStorageSync('openid')
+                },
+                success: (res) => {
+                    this.paid = true;
+                    wx.hideLoading();
+                    wx.showToast({
+                        title: res.data.msg,
+                    });
+                    this.updateOrderPaymentStatus()
+                },
+                fail: (err) => {
+                    wx.hideLoading();
+                    uni.showToast({title: '支付失败，请重试', icon: 'none'})
+                }
+            })
         },
-        setCustomAmount() {
-            const amount = parseFloat(this.balance);
-            if (!isNaN(amount) && amount > 0) {
-                this.selectedAmount = amount;
-            } else {
-                this.$message.error("请输入有效的金额");
-            }
+        payWithBalance() {
+            wx.showLoading({
+                title: '加载中',
+            })
+            uni.request({
+                url: getApp().globalData.requestUrl + '/order/payWithBalance',
+                method: 'POST',
+                data: {
+                    oid: this.orderInfo.id,
+                    uid: wx.getStorageSync('uid'),
+                },
+                success: (res) => {
+                    this.paid = true;
+                    wx.hideLoading();
+                    wx.showToast({
+                        title: res.data.msg,
+                    });
+                    this.updateOrderPaymentStatus()
+                },
+                fail: (err) => {
+                    wx.hideLoading();
+                    uni.showToast({title: '支付失败，请重试', icon: 'none'})
+                }
+            })
         },
-        confirmCharge() {
-            if (this.selectedAmount > 0) {
-                uni.request({
-                    url: getApp().globalData.requestUrl + '/user/updateUserBalance',
-                    method: 'POST',
-                    data: {
-                        id: this.userInfo.id,
-                        balance: this.selectedAmount
-                    },
-                    success: (res) => {
-                        console.log()
-                        uni.showToast({title: '成功充值¥' + this.selectedAmount, icon: 'none'});
-                        this.$parent.getUserInfo();
-                    },
-                    fail: (err) => {
-                        console.log(err)
-                        uni.showToast({title: '充值失败', icon: 'none'})
-                    }
-                });
-            } else {
-                this.$message.error("请选择或输入一个充值金额");
-            }
-        },
+        updateOrderPaymentStatus() {
+            uni.request({
+                url: getApp().globalData.requestUrl + '/order/updateOrderPaymentStatus',
+                method: 'POST',
+                data: {
+                    oid: this.orderInfo.id
+                },
+                success: (res) => {
+                    uni.showToast({title: '支付成功', icon: 'none'})
+                },
+            })
+        }
+
     },
 };
 </script>
@@ -82,7 +97,7 @@ export default {
 <style scoped>
 @import '../style/shadow.css';
 
-.charge-container {
+.payment-container {
     z-index: 1000;
     display: flex;
     flex-direction: column;
@@ -106,67 +121,30 @@ export default {
     text-align: center;
 }
 
-.charge-header {
+.payment-header {
     font-size: 34rpx;
     font-weight: bold;
     margin-bottom: 20rpx;
 }
 
-.charge-options {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 30rpx;
+.payment-methods {
+    margin-top: 20rpx;
 }
 
-.charge-button {
-    background-color: #812740;
-    color: white;
-    padding: 20rpx 0;
-    border-radius: 30rpx;
-    flex: 1;
-    margin: 0 10rpx;
-    font-size: 32rpx;
-}
-
-
-.charge-button:hover {
-    background-color: #812740;
-}
-
-.custom-charge {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 30rpx;
-}
-
-.custom-charge input {
-    flex: 1;
-    padding: 20rpx;
-    border-radius: 30rpx;
-    border: 1px solid #ccc;
-    margin-right: 10rpx;
-    font-size: 30rpx;
-}
-
-.confirm-button {
-    background-color: #f8be23;
-    color: white;
-    padding: 20rpx 0;
-    border-radius: 30rpx;
-    width: 100%;
-    font-size: 32rpx;
-}
-
-.confirm-button:hover {
-    background-color: #f8be23;
-}
-
-.info {
-    margin: 20px 0;
-}
-
-.credit {
+.payment-method-title {
     font-size: 28rpx;
-    color: #666;
+    margin-bottom: 10rpx;
 }
+
+.payment-button {
+    width: 100%;
+    padding: 10rpx 0;
+    background-color: #feb327;
+    color: #fff;
+    border: none;
+    border-radius: 30rpx;
+    margin-bottom: 10rpx;
+    font-size: 32rpx;
+}
+
 </style>

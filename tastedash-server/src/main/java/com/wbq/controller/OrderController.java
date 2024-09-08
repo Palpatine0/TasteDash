@@ -96,7 +96,7 @@ public class OrderController {
         orderService.updateById(order);
     }
 
-    @RequestMapping("/pay")
+    @RequestMapping("/payWithWeChat")
     public R pay(@RequestBody Map<String, String> dto) {
         if (true) {
             return R.ok("支付成功");
@@ -104,4 +104,45 @@ public class OrderController {
             return R.error("支付失败");
         }
     }
+
+    @RequestMapping("/payWithBalance")
+    public R payWithBalance(@RequestBody Map<String, String> dto) {
+        // Fetch the order by ID
+        QueryWrapper<Order> orderWrapper = new QueryWrapper<>();
+        orderWrapper.eq("id", dto.get("oid"));
+        Order order = orderService.getOne(orderWrapper);
+
+        // Fetch the user by ID
+        QueryWrapper<User> userWrapper = new QueryWrapper<>();
+        userWrapper.eq("id", dto.get("uid"));
+        User user = userService.getOne(userWrapper);
+
+        if (order == null) {
+            return R.error("订单不存在");
+        }
+
+        if (user == null) {
+            return R.error("用户不存在");
+        }
+
+        // Get the user's current balance and the total order amount
+        int balance = user.getBalance();
+        Double price = order.getSett_amount();
+
+        // Check if the user has enough balance to pay for the order
+        if (balance >= price) {
+            // Deduct the order price from the user's balance
+            user.setBalance(balance - price.intValue());
+            userService.updateById(user);
+
+            // Update the order payment status to 'paid' (assuming 1 means 'paid')
+            order.setPaymentStatus(1);
+            orderService.updateById(order);
+
+            return R.ok("支付成功");
+        } else {
+            return R.error("余额不足，支付失败");
+        }
+    }
+
 }

@@ -85,7 +85,6 @@ export default {
                 },
                 success: (res) => {
                     this.userInfo = res.data;
-                    console.log(this.userInfo);
                 },
             });
         },
@@ -102,7 +101,7 @@ export default {
         }
     },
     onLoad() {
-        this.getUserInfo();  // Fetch user info on page load
+        this.getUserInfo();
     }
 }
 </script>

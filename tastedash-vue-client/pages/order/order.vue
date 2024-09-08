@@ -11,7 +11,7 @@
             <view class="foot-til">
                 <text>我的订单</text>
             </view>
-            <block v-for="(item,index) in goods_data" :key="index">
+            <block v-for="(item,index) in dishList" :key="index">
                 <view class="foot-deta">
                     <view>
                         <image :src="requestUrl+'/image/dish/'+item.image" mode="aspectFill"></image>
@@ -23,20 +23,18 @@
                     <view class="foot-total">¥{{ item.total_price }}</view>
                 </view>
             </block>
-            <!-- 总计 -->
             <view class="total-view">
-                <view>共 {{ overall }} 份</view>
+                <view>共 {{ dishCount }} 份</view>
                 <view class="total-price">
                     <text>总计</text>
-                    <text>¥{{ Price(Number(other_data.sett_amount)) }}</text>
+                    <text>¥{{ Price(Number(orderInfo.sett_amount)) }}</text>
                 </view>
             </view>
         </view>
-        <!-- 订单号 -->
         <view class="foot-back order-number">
-            <text>订单编号：{{ other_data.order_no }}</text>
-            <text>下单时间：{{ other_data.createTime }}</text>
-            <text>桌台名称：{{ other_data.table_number }}</text>
+            <text>订单编号：{{ orderInfo.order_no }}</text>
+            <text>下单时间：{{ orderInfo.createTime }}</text>
+            <text>桌台名称：{{ orderInfo.table_number }}</text>
         </view>
         <view style="height: 300rpx;"></view>
     </view>
@@ -45,11 +43,12 @@
         <view :style="{'padding-bottom': needsTopPadding ? '68rpx' : ''}" @click="orderRedirect">
             <view class="order-more">再来一单</view>
         </view>
-        <view :style="{'padding-bottom': needsTopPadding ? '68rpx' : ''}" @click="orderPay">
+        <view v-if="!paid" :style="{'padding-bottom': needsTopPadding ? '68rpx' : ''}" @click="paymentMethodSelectionToggle">
             <view class="pay">确认支付</view>
         </view>
     </div>
 
+    <PaymentMethodSelection v-if="paymentMethodSelectionVisible" :userInfo="userInfo" :orderInfo="orderInfo" :balanceAdequate="balanceAdequate"></PaymentMethodSelection>
     <SkeletonOrder v-if="skeletonVisible"></SkeletonOrder>
 
 </view>
@@ -57,28 +56,34 @@
 
 <script>
 import {requestUtil} from "../../utils/requestUtil.js"
+import SkeletonOrder from '../../components/skeleton/skeleton-order.vue'
+import PaymentMethodSelection from "../../components/paymentMethodSelection.vue";
 
 const app = getApp()
 const {needsTopPadding} = app.globalData
-import SkeletonOrder from '../../components/skeleton/skeleton-order.vue'
 
-const db = wx.cloud.database()
 const Price = require('e-commerce_price')
 export default {
-    components: {SkeletonOrder},
+    components: {PaymentMethodSelection, SkeletonOrder},
     data() {
         return {
             requestUrl: getApp().globalData.requestUrl,
-
             skeletonVisible: true,
             needsTopPadding,
             Price,
-            overall: 0,
-            other_data: {},
-            comp_data: [],
-            goods_data: [],
 
-            oid: ""
+            orderInfo: {},
+            dishCount: 0,
+            dishList: [],
+
+            userInfo: {},
+
+            paymentMethodSelectionVisible: false,
+            dialogVisible: false,
+
+            oid: "",
+            paid: false,
+            balanceAdequate: false,
         }
     },
     methods: {
@@ -91,43 +96,60 @@ export default {
                     },
                     method: "POST"
                 })
-                let res_data = res.goods_list
-                this.overall = res_data.length
-                this.other_data = res.menu
-                this.goods_data = res_data
+                let dishList = res.dishList
+                this.dishCount = dishList.length
+                this.orderInfo = res.order
+                this.dishList = dishList
                 this.skeletonVisible = false
-
+                this.getUserInfo()
             } catch (e) {
                 //TODO handle the exception
             }
         },
+        getUserInfo() {
+            uni.request({
+                url: getApp().globalData.requestUrl + '/user/getUserInfo',
+                method: 'POST',
+                data: {
+                    id: uni.getStorageSync("uid")
+                },
+                success: (res) => {
+                    this.userInfo = res.data;
+                    console.log("this.userInfo");
+                    console.log(this.userInfo);
+                    this.balanceAdequateValidation();
+                },
+            });
+        },
+        balanceAdequateValidation() {
+            // Convert the amount and balance to floats to ensure accurate comparison
+            const amount = parseFloat(this.orderInfo.sett_amount);
+            const balance = parseFloat(this.userInfo.balance);
+
+            // Ensure both amount and balance are valid numbers (not NaN)
+            if (isNaN(amount) || isNaN(balance)) {
+                // If either value is NaN, set balanceAdequate to false
+                this.balanceAdequate = false;
+                return;
+            }
+            // Check if the user's balance is sufficient to cover the required amount
+            if (balance >= amount) {
+                this.balanceAdequate = true;
+            } else {
+                this.balanceAdequate = false;
+            }
+        },
+
         orderRedirect() {
             wx.reLaunch({
                 url: '/pages/menu/menu'
             })
         },
-        orderPay() {
-            wx.showLoading({
-                title: '加载中',
-            })
-            uni.request({
-                url: requestUrl + 'order/pay',
-                method: 'POST',
-                data: {
-                    orderid: other_data.order_no,
-                    uid: wx.getStorageSync('uid'),
-                    openid: wx.getStorageSync('openid')
-                },
-                success(res) {
-                    console.log("success")
-                    wx.hideLoading()
-                },
-                fail(err) {
-                    console.log("err")
-                    wx.hideLoading()
-                }
-            })
-        }
+        paymentMethodSelectionToggle() {
+            this.paymentMethodSelectionVisible = !this.paymentMethodSelectionVisible;
+        },
+
+
     },
     onLoad(params) {
         this.oid = params.oid;
