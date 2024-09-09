@@ -286,8 +286,8 @@ export default {
                 wx.hideLoading()
             }
         },
+
         pushMessage() {
-            var pubsub = this.goeasy.pubsub;
             pubsub.publish({
                 channel: "my_channel",
                 message: "来自小程序端",

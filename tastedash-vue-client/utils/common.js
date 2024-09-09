@@ -46,7 +46,6 @@ var $common = {
                 option[i] === undefined ||
                 option[i] === null
             ) {
-                //
             } else {
                 return option[i];
             }
@@ -68,7 +67,6 @@ var $common = {
     },
     removeSpace: function (v, filterKeyArr) {
         if (this.isString(v)) {
-            //字符串
             return v.trim();
         } else if (this.isObject(v)) {
             let obj = this.copy(v);
@@ -179,8 +177,8 @@ var $common = {
         let oInput = document.createElement("textarea");
         oInput.value = data;
         document.body.appendChild(oInput);
-        let txt = oInput.select(); // 选择对象;
-        document.execCommand("Copy"); // 执行浏览器复制命令
+        let txt = oInput.select();
+        document.execCommand("Copy");
         oInput.remove();
         callback && callback(txt);
     },

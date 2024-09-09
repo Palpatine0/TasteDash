@@ -95,6 +95,7 @@ page {
     background-image: url('https://i.imghippo.com/files/BKQdC1725154197.png');
     position: relative;
     padding: 0 20rpx;
+    height: 100vh;
 }
 
 .order-remind view:nth-child(1) {

@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "e-commerce_price": "^1.0.3",
-    "goeasy": "^2.1.11",
     "moment": "^2.29.1"
   }
 }

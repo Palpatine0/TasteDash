@@ -86,8 +86,6 @@ export default {
 
         getUserInfo(e) {
             var openid = "";
-            console.log("getUserInfo")
-            console.log(e)
             uni.login({
                 provider: 'weixin',
                 success: (loginRes) => {
@@ -124,8 +122,6 @@ export default {
                                                 uni.setStorageSync('nickname', nickname);
                                                 uni.setStorageSync('avatar', avatar);
                                                 const storageInfo = uni.getStorageInfoSync();
-                                                console.log("storageInfo")
-                                                console.log(storageInfo)
                                                 this.hasUserInfo = true
                                             },
                                         });
@@ -147,10 +143,7 @@ export default {
 
         },
         checkUserInfo() {
-            console.log("M checkUserInfo")
             const openid = uni.getStorageSync('openid');
-            console.log("openid")
-            console.log(openid)
             if (common.isEmpty(openid)) {
                 this.userProfileAvailable = false
                 uni.showModal({
@@ -172,9 +165,6 @@ export default {
     onLoad(e) {
         this.tableId = e.number
         uni.setStorageSync('tableId', e.number)
-        const storageInfoSync = uni.getStorageInfoSync();
-        console.log("storageInfoSync")
-        console.log(storageInfoSync)
         this.checkUserInfo()
     },
 }

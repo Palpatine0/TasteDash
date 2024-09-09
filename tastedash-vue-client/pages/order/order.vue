@@ -115,8 +115,6 @@ export default {
                 },
                 success: (res) => {
                     this.userInfo = res.data;
-                    console.log("this.userInfo");
-                    console.log(this.userInfo);
                     this.balanceAdequateValidation();
                 },
             });

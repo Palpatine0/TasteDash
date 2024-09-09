@@ -2,7 +2,6 @@
 	return new Date().getTime()-new Date(toDate).getTime();
 }
 
-
 var timeFormat = function (msTime) {
     let time = new Date(msTime);
     let yy = time.getFullYear();
